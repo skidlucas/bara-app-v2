@@ -15,7 +15,7 @@ const SignUpFormSchema = z.object({
     confirmPassword: z.string(),
 })
 
-const Login = SignUpFormSchema.omit({ firstname: true, confirmPassword: true })
+// const Login = SignUpFormSchema.omit({ firstname: true, confirmPassword: true })
 
 // This is temporary until @types/react-dom is updated
 export type State = {

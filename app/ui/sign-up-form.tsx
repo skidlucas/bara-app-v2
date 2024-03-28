@@ -14,7 +14,7 @@ export default function SignUpForm() {
     return (
         <form action={dispatch} className="space-y-3">
             <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-                <h1 className={`${lusitana.className} mb-3 text-2xl text-gray-900`}>S'inscrire</h1>
+                <h1 className={`${lusitana.className} mb-3 text-2xl text-gray-900`}>S&apos;inscrire</h1>
                 <p className="text-xs text-gray-900">Vous avez déjà un compte ? Se connecter </p>
                 <div className="w-full">
                     <div>
@@ -129,7 +129,7 @@ function LoginButton() {
 
     return (
         <Button className="mt-4 w-full" aria-disabled={pending}>
-            S'inscrire <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            S&apos;inscrire <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
     )
 }
