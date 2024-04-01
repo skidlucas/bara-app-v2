@@ -5,6 +5,8 @@ import { passwordPattern } from '@/app/utils/patterns'
 import baraApi from '@/app/utils/api'
 import { redirect } from 'next/navigation'
 import { AxiosError } from 'axios'
+import { signIn } from '@/auth'
+import { AuthError } from 'next-auth'
 
 const SignUpFormSchema = z.object({
     firstname: z.string(),
@@ -66,4 +68,20 @@ export async function signUp(prevState: State, formData: FormData) {
     }
 
     redirect('/dashboard')
+}
+
+export async function authenticate(prevState: string | undefined, formData: FormData) {
+    try {
+        await signIn('credentials', formData)
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return 'Identifiants incorrects'
+                default:
+                    return `Erreur : ${error.message}`
+            }
+        }
+        throw error
+    }
 }
