@@ -2,7 +2,8 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { z } from 'zod'
-import axios from 'axios'
+import baraApi from '@/app/lib/api'
+import { AxiosError, AxiosResponse } from 'axios'
 
 export const { auth, signIn, signOut } = NextAuth({
     ...authConfig,
@@ -15,13 +16,21 @@ export const { auth, signIn, signOut } = NextAuth({
 
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data
-                    // todo make this call more pretty + return user instead of just access token?
-                    const res = await axios.post('http://localhost:3000/api/auth/login', { email, password })
-                    if (!res.data) {
-                        return null
-                    }
+                    let res: AxiosResponse
+                    try {
+                        res = await baraApi.post('auth/login', { email, password })
 
-                    return res.data
+                        if (!res.data) {
+                            return null
+                        }
+
+                        return res.data
+                    } catch (e) {
+                        if (e instanceof AxiosError) {
+                            console.log(`Erreur : ${e.response?.data.message}`)
+                            return null
+                        }
+                    }
                 }
 
                 console.log('Erreur dans le formulaire de connexion')
