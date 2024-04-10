@@ -47,12 +47,12 @@ export const { auth, signIn, signOut } = NextAuth({
             }
             return token
         },
-        session: async ({ session, token }) => {
-            // Add access_token to session
-            if (token?.accessToken) {
-                session.accessToken = token.accessToken
-            }
-            return session
-        },
+        // session: async ({ session, token }) => {
+        //     // Add access_token to session
+        //     if (token?.accessToken) {
+        //         session.accessToken = token.accessToken
+        //     }
+        //     return session
+        // },
     },
 })
