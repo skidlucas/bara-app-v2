@@ -1,13 +1,13 @@
 'use client'
 
-import { lusitana } from '@/app/ui/fonts'
+import { lusitana } from '@/components/ui/fonts'
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import { useFormState, useFormStatus } from 'react-dom'
-import { authenticate } from '@/app/lib/actions/auth'
-import { Button } from '@/app/ui/buttons/button'
-import EmailInput from '@/app/ui/inputs/email-input'
-import { PasswordInput } from '@/app/ui/inputs/password-input'
+import { authenticate } from '@/lib/actions/auth'
+import { Button } from '@/components/ui/button'
+import EmailInput from '@/components/ui/inputs/email-input'
+import { PasswordInput } from '@/components/ui/inputs/password-input'
 
 export default function LoginForm() {
     const [errorMessage, dispatch] = useFormState(authenticate, undefined)

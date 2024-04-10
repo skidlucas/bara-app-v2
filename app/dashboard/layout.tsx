@@ -1,4 +1,4 @@
-import SideNav from '@/app/ui/dashboard/sidenav'
+import SideNav from '@/components/ui/dashboard/sidenav'
 import React from 'react'
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {

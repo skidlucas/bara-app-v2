@@ -1,8 +1,8 @@
 'use server'
 
 import { z } from 'zod'
-import { passwordPattern } from '@/app/lib/patterns'
-import baraApi from '@/app/lib/api'
+import { passwordPattern } from '@/lib/patterns'
+import baraApi from '@/lib/api'
 import { redirect } from 'next/navigation'
 import { AxiosError } from 'axios'
 import { signIn } from '@/auth'

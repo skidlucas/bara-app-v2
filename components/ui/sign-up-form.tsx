@@ -1,14 +1,14 @@
 'use client'
 
 import { useFormState, useFormStatus } from 'react-dom'
-import { lusitana } from '@/app/ui/fonts'
+import { lusitana } from '@/components/ui/fonts'
 import { UserIcon } from '@heroicons/react/24/outline'
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
-import { Button } from '@/app/ui/buttons/button'
-import { signUp } from '@/app/lib/actions/auth'
-import EmailInput from '@/app/ui/inputs/email-input'
-import { PasswordInput } from '@/app/ui/inputs/password-input'
-import { Input } from '@/app/ui/inputs/input'
+import { Button } from '@/components/ui/button'
+import { signUp } from '@/lib/actions/auth'
+import EmailInput from '@/components/ui/inputs/email-input'
+import { PasswordInput } from '@/components/ui/inputs/password-input'
+import { Input } from '@/components/ui/inputs/input'
 
 export default function SignUpForm() {
     const initialState = { message: '', errors: {} }

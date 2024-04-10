@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { z } from 'zod'
-import baraApi from '@/app/lib/api'
+import baraApi from '@/lib/api'
 import { AxiosError, AxiosResponse } from 'axios'
 
 export const { auth, signIn, signOut } = NextAuth({
