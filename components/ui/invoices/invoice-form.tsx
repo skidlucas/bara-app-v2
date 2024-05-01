@@ -31,8 +31,10 @@ const formSchema = z.object({
 export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
     const isUpdateForm = !!invoice
 
-    let defaultValues: any = {
+    let defaultValues = {
         date: new Date(),
+        patientId: '',
+        insuranceId: '',
         socialSecurityAmount: 0,
         isSocialSecurityPaid: false,
         insuranceAmount: 0,
