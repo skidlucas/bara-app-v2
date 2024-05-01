@@ -5,9 +5,10 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
 import { useFormState, useFormStatus } from 'react-dom'
 import { authenticate } from '@/lib/actions/auth'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/basics/button'
 import EmailInput from '@/components/ui/inputs/email-input'
 import { PasswordInput } from '@/components/ui/inputs/password-input'
+import Link from 'next/link'
 
 export default function LoginForm() {
     const [errorMessage, dispatch] = useFormState(authenticate, undefined)
@@ -16,6 +17,12 @@ export default function LoginForm() {
         <form action={dispatch} className="space-y-3">
             <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
                 <h1 className={`${lusitana.className} mb-3 text-2xl`}>Veuillez vous connecter pour continuer.</h1>
+                <p className="text-xs text-gray-900">
+                    Vous n&apos;avez pas encore de compte ?{' '}
+                    <Link key="sign-up" href="/sign-up" className="text-blue-500">
+                        S&apos;inscrire
+                    </Link>
+                </p>
                 <div className="w-full">
                     <div>
                         <EmailInput />

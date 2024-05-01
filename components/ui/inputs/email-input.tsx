@@ -1,4 +1,5 @@
 import { AtSymbolIcon } from '@heroicons/react/24/outline'
+import { Input } from '@/components/ui/basics/input'
 
 export default function EmailInput() {
     return (
@@ -7,8 +8,8 @@ export default function EmailInput() {
                 Email
             </label>
             <div className="relative">
-                <input
-                    className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                <Input
+                    className="pl-10"
                     id="email"
                     type="email"
                     name="email"

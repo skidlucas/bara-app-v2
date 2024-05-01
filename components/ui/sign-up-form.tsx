@@ -4,11 +4,12 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { lusitana } from '@/components/ui/fonts'
 import { UserIcon } from '@heroicons/react/24/outline'
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/basics/button'
 import { signUp } from '@/lib/actions/auth'
 import EmailInput from '@/components/ui/inputs/email-input'
 import { PasswordInput } from '@/components/ui/inputs/password-input'
-import { Input } from '@/components/ui/inputs/input'
+import { InputWithLabel } from '@/components/ui/inputs/input-with-label'
+import Link from 'next/link'
 
 export default function SignUpForm() {
     const initialState = { message: '', errors: {} }
@@ -18,10 +19,15 @@ export default function SignUpForm() {
         <form action={dispatch} className="space-y-3">
             <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
                 <h1 className={`${lusitana.className} mb-3 text-2xl text-gray-900`}>S&apos;inscrire</h1>
-                <p className="text-xs text-gray-900">Vous avez déjà un compte ? Se connecter </p>
+                <p className="text-xs text-gray-900">
+                    Vous avez déjà un compte ?{' '}
+                    <Link key="login" href="/login" className="text-blue-500">
+                        Se connecter
+                    </Link>
+                </p>
                 <div className="w-full">
                     <div>
-                        <Input
+                        <InputWithLabel
                             id="firstname"
                             name="firstname"
                             label="Prénom"

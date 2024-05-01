@@ -1,4 +1,5 @@
 import { KeyIcon } from '@heroicons/react/24/outline'
+import { Input } from '@/components/ui/basics/input'
 
 type PasswordInputProps = {
     name?: string
@@ -10,15 +11,15 @@ export function PasswordInput({
     name = 'password',
     label = 'Mot de passe',
     placeholder = 'Votre de mot de passe',
-}: Readonly<PasswordInputProps>) {
+}: PasswordInputProps) {
     return (
         <>
             <label className="mb-3 mt-5 block text-xs font-medium text-gray-900" htmlFor={name}>
                 {label}
             </label>
             <div className="relative">
-                <input
-                    className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                <Input
+                    className="pl-10"
                     id={name}
                     type="password"
                     name={name}

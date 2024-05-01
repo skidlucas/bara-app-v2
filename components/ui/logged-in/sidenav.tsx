@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import NavLinks from '@/components/ui/dashboard/nav-links'
+import NavLinks from '@/components/ui/logged-in/nav-links'
 import { PowerIcon } from '@heroicons/react/24/outline'
 import { signOut } from '@/auth'
 import BaraLogo from '@/components/ui/bara-logo'
+import { Button } from '@/components/ui/basics/button'
 
 export default function SideNav() {
     return (
@@ -21,10 +22,10 @@ export default function SideNav() {
                         await signOut()
                     }}
                 >
-                    <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
-                        <PowerIcon className="w-6" />
+                    <Button className="h-[48px] w-full">
+                        <PowerIcon className="w-6 mr-1" />
                         <div className="hidden md:block">Se déconnecter</div>
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>
