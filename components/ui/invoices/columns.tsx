@@ -60,9 +60,9 @@ export const columns: ColumnDef<Invoice>[] = [
         accessorKey: 'insurance',
         header: 'Mutuelle',
         cell: ({ row }) => {
-            const amount = formatCurrency(row.original.insuranceAmount)
+            if (row.original.insurance?.name && row.original.insuranceAmount) {
+                const amount = formatCurrency(row.original.insuranceAmount)
 
-            if (row.original.insurance?.name && amount) {
                 return (
                     <div>
                         {row.original.insurance.name} :
@@ -118,6 +118,7 @@ export const columns: ColumnDef<Invoice>[] = [
                     </ResponsiveDialog>
 
                     <Button variant="outline" className="p-2" onClick={() => console.log(`supprimer ${invoice.id}`)}>
+                        {/* TODO : api call to delete the invoice OR modal to make sure its not an error */}
                         <span className="sr-only">Supprimer la facture</span>
                         <TrashIcon className="w-5" />
                     </Button>

@@ -1,9 +1,17 @@
 import axios from 'axios'
+import { cookies } from 'next/headers'
 
-const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`
-    const parts = value.split(`; ${name}=`)
-    if (parts.length === 2) return parts.pop()?.split(';').shift()
+const getClerkAccessTokenFromCookies = () => {
+    const clerkCookieName = '__session'
+    if (typeof window !== 'undefined') {
+        // client components
+        const value = `; ${document?.cookie}`
+        const parts = value.split(`; ${clerkCookieName}=`)
+        if (parts.length === 2) return parts.pop()?.split(';').shift()
+    } else {
+        // server components
+        return cookies().get(clerkCookieName)?.value
+    }
 }
 
 const baraApi = axios.create({
@@ -11,9 +19,9 @@ const baraApi = axios.create({
 })
 
 baraApi.interceptors.request.use((cfg) => {
-    const accessTokenFromClerk = getCookie('__session')
-    if (accessTokenFromClerk) {
-        cfg.headers.Authorization = `Bearer ${accessTokenFromClerk}`
+    const accessToken = getClerkAccessTokenFromCookies()
+    if (accessToken) {
+        cfg.headers.Authorization = `Bearer ${accessToken}`
     }
     return cfg
 })

@@ -6,9 +6,9 @@ import { Suspense } from 'react'
 import { InvoicesTableSkeleton } from '@/components/ui/skeletons'
 import { InvoicesTable } from '@/components/ui/invoices/data-table'
 import { columns } from '@/components/ui/invoices/columns'
-import { fakeInvoices } from '@/components/ui/invoices/fixtures'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import baraApi from '@/lib/api'
 
 export const metadata: Metadata = {
     title: 'Factures',
@@ -17,15 +17,45 @@ export default async function Page({
     searchParams,
 }: {
     searchParams?: {
-        query?: string
+        search?: string
         page?: string
+        unpaid?: string
     }
 }) {
-    const query = searchParams?.query ?? ''
+    const search = searchParams?.search ?? ''
     const currentPage = Number(searchParams?.page) || 1
+    const unpaid = searchParams?.unpaid ?? ''
 
-    // todo fetch invoices here
-    const invoices = fakeInvoices
+    const getInvoices = async () => {
+        const queryParams: any = {
+            page: currentPage,
+        }
+
+        if (search) {
+            queryParams.search = search
+        }
+
+        if (unpaid) {
+            if (unpaid === 'socialSecurity') {
+                queryParams['filter.isSocialSecurityPaid'] = false
+                queryParams['filter.securityAmount'] = '$gt:0'
+            } else if (unpaid === 'insurance') {
+                queryParams['filter.isInsurancePaid'] = false
+                queryParams['filter.insuranceAmount'] = '$gt:0'
+            }
+        }
+        const searchParams = new URLSearchParams(queryParams)
+
+        try {
+            const { data } = await baraApi.get(`/invoices?${searchParams.toString()}`)
+            return { invoices: data.data, meta: data.meta }
+        } catch (error) {
+            console.error(error)
+            return { error }
+        }
+    }
+
+    const { invoices } = await getInvoices()
 
     return (
         <div className="w-full">
@@ -42,7 +72,7 @@ export default async function Page({
                     <PlusIcon className="h-5 md:ml-4" />
                 </Link>
             </div>
-            <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+            <Suspense key={search + currentPage} fallback={<InvoicesTableSkeleton />}>
                 <InvoicesTable columns={columns} data={invoices} />
                 {/*<Table query={query} currentPage={currentPage} />*/}
             </Suspense>
