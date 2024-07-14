@@ -1,9 +1,11 @@
-import NextAuth from 'next-auth'
-import { authConfig } from './auth.config'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-export default NextAuth(authConfig).auth
+const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
+
+export default clerkMiddleware((auth, req) => {
+    if (!isPublicRoute(req)) auth().protect()
+})
 
 export const config = {
-    // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-    matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+    matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 }

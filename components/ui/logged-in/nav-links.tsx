@@ -9,14 +9,14 @@ import clsx from 'clsx'
 // Depending on the size of the application, this would be stored in a database.
 // todo change this
 const links = [
-    { name: 'Dashboard', href: '/logged-in', icon: HomeIcon },
+    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     {
         name: 'Factures',
         href: '/invoices',
         icon: DocumentDuplicateIcon,
     },
     { name: 'Patients', href: '/customers', icon: UserGroupIcon },
-    { name: 'Mutuelles', href: '/customers', icon: BuildingOfficeIcon },
+    { name: 'Mutuelles', href: '/insurances', icon: BuildingOfficeIcon },
 ]
 
 export default function NavLinks() {

@@ -1,13 +1,20 @@
 import axios from 'axios'
 
+const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop()?.split(';').shift()
+}
+
 const baraApi = axios.create({
-    baseURL: process.env.API_URL,
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
 })
 
 baraApi.interceptors.request.use((cfg) => {
-    // const state = accessTokenStore.getState()
-    // const accessToken = state.accessToken && state.accessToken.id
-    // cfg.headers!.Authorization = `Bearer ${accessToken}`
+    const accessTokenFromClerk = getCookie('__session')
+    if (accessTokenFromClerk) {
+        cfg.headers.Authorization = `Bearer ${accessTokenFromClerk}`
+    }
     return cfg
 })
 
