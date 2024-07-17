@@ -13,25 +13,40 @@ import { Input } from '@/components/ui/basics/input'
 import { Switch } from '@/components/ui/basics/switch'
 import { Invoice } from '@/lib/definitions'
 import { clsx } from 'clsx'
+import baraApi from '@/lib/api/client.api'
+import { useRouter } from 'next/navigation'
 
-const formSchema = z.object({
-    date: z.date({
-        required_error: 'La date est obligatoire',
-    }),
-    patientId: z.string({
-        required_error: 'Choisissez un patient',
-    }),
-    insuranceId: z.string().optional(),
-    socialSecurityAmount: z.coerce.number().gt(0, 'Le montant de la CPAM devrait être supérieur à 0'),
-    isSocialSecurityPaid: z.boolean(),
-    insuranceAmount: z.coerce.number(),
-    isInsurancePaid: z.boolean(),
-})
+const formSchema = z
+    .object({
+        date: z.date({
+            required_error: 'La date est obligatoire',
+        }),
+        patientId: z.string({
+            required_error: 'Choisissez un patient',
+        }),
+        insuranceId: z.string().optional(),
+        socialSecurityAmount: z.coerce.number().gt(0, 'Le montant de la CPAM devrait être supérieur à 0'),
+        isSocialSecurityPaid: z.boolean(),
+        insuranceAmount: z.coerce.number(),
+        isInsurancePaid: z.boolean(),
+    })
+    .refine(
+        (schema) => {
+            return !(schema.insuranceAmount && !schema.insuranceId)
+        },
+        {
+            message: `Ce montant ne peut pas être supérieur à 0 s'il n'y a pas de mutuelle sélectionnée`,
+            path: ['insuranceAmount'],
+        },
+    )
+
+export interface InvoiceFormValues extends z.infer<typeof formSchema> {}
 
 export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
     const isUpdateForm = !!invoice
+    const { push } = useRouter()
 
-    let defaultValues = {
+    let defaultValues: InvoiceFormValues = {
         date: new Date(),
         patientId: '',
         insuranceId: '',
@@ -44,8 +59,8 @@ export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
     if (isUpdateForm) {
         defaultValues = {
             date: new Date(invoice.date),
-            patientId: invoice.patientId.toString(),
-            insuranceId: invoice.insuranceId?.toString() ?? '0',
+            patientId: invoice.patient.id.toString(),
+            insuranceId: invoice.insurance?.id.toString() ?? '',
             socialSecurityAmount: invoice.socialSecurityAmount / 100,
             isSocialSecurityPaid: invoice.isSocialSecurityPaid,
             insuranceAmount: invoice.insuranceAmount / 100,
@@ -53,16 +68,26 @@ export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
         }
     }
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<InvoiceFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues,
     })
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    const onSubmit = async (values: InvoiceFormValues) => {
+        const invoiceToCreate: Partial<Invoice> = {
+            ...values,
+            patientId: parseInt(values.patientId, 10),
+            insuranceId: (values.insuranceId && parseInt(values.insuranceId, 10)) || 0,
+        }
+
+        if (!invoiceToCreate.insuranceId) delete invoiceToCreate.insuranceId
+
+        try {
+            await baraApi.post(`/invoices`, invoiceToCreate)
+            push('/invoices')
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     return (
@@ -177,7 +202,7 @@ export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
                         />
                     </div>
                 </div>
-                <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end', { ['flex-col']: isUpdateForm })}>
+                <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end space-x-2', { ['flex-col']: isUpdateForm })}>
                     {!isUpdateForm && (
                         <Link
                             href={MENU.invoices.link}

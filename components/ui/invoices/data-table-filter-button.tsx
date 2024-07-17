@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/basics/dropdown-menu'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface DataTableFilterButtonProps<TData> {
     table: Table<TData>
@@ -24,19 +24,21 @@ export function DataTableFilterButton<TData>({ table }: DataTableFilterButtonPro
 
     const [typeOfUnpaidInvoices, setTypeOfUnpaidInvoices] = useState('')
 
-    const handleFilter = () => {
-        const params = new URLSearchParams(searchParams)
-        if (typeOfUnpaidInvoices) {
-            params.set('unpaid', typeOfUnpaidInvoices)
-        } else {
-            params.delete('unpaid')
-        }
-        replace(`${pathname}?${params.toString()}`)
-    }
+    const handleFilter = useCallback(
+        (typeOfUnpaidInvoices: string) => {
+            const params = new URLSearchParams(searchParams)
+            if (typeOfUnpaidInvoices) {
+                params.set('unpaid', typeOfUnpaidInvoices)
+            } else {
+                params.delete('unpaid')
+            }
+            replace(`${pathname}?${params.toString()}`)
+        },
+        [searchParams, pathname, replace],
+    )
 
     useEffect(() => {
-        console.log('x')
-        handleFilter()
+        handleFilter(typeOfUnpaidInvoices)
     }, [typeOfUnpaidInvoices, handleFilter])
 
     return (

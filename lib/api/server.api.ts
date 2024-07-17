@@ -3,15 +3,7 @@ import { cookies } from 'next/headers'
 
 const getClerkAccessTokenFromCookies = () => {
     const clerkCookieName = '__session'
-    if (typeof window !== 'undefined') {
-        // client components
-        const value = `; ${document?.cookie}`
-        const parts = value.split(`; ${clerkCookieName}=`)
-        if (parts.length === 2) return parts.pop()?.split(';').shift()
-    } else {
-        // server components
-        return cookies().get(clerkCookieName)?.value
-    }
+    return cookies().get(clerkCookieName)?.value
 }
 
 const baraApi = axios.create({

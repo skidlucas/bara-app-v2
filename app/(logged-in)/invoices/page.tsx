@@ -8,7 +8,7 @@ import { InvoicesTable } from '@/components/ui/invoices/data-table'
 import { columns } from '@/components/ui/invoices/columns'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import baraApi from '@/lib/api'
+import baraApi from '@/lib/api/server.api'
 
 export const metadata: Metadata = {
     title: 'Factures',
@@ -25,10 +25,12 @@ export default async function Page({
     const search = searchParams?.search ?? ''
     const currentPage = Number(searchParams?.page) || 1
     const unpaid = searchParams?.unpaid ?? ''
+    const limit = 10
 
     const getInvoices = async () => {
         const queryParams: any = {
             page: currentPage,
+            limit,
         }
 
         if (search) {
@@ -55,14 +57,14 @@ export default async function Page({
         }
     }
 
-    const { invoices } = await getInvoices()
+    const { invoices, meta } = await getInvoices()
 
     return (
         <div className="w-full">
             <div className="flex w-full items-center justify-between">
                 <h1 className={`${lusitana.className} text-2xl`}>{MENU.invoices.label}</h1>
             </div>
-            <div className="mt-4 flex items-center justify-between md:mt-8">
+            <div className="mt-4 flex items-center justify-between md:mt-8 space-x-2">
                 <Search placeholder="Chercher une facture..." />
                 <Link
                     href={MENU.invoices.pages.create.link}
@@ -73,8 +75,7 @@ export default async function Page({
                 </Link>
             </div>
             <Suspense key={search + currentPage} fallback={<InvoicesTableSkeleton />}>
-                <InvoicesTable columns={columns} data={invoices} />
-                {/*<Table query={query} currentPage={currentPage} />*/}
+                <InvoicesTable columns={columns} data={invoices} totalItems={meta.totalItems} limit={limit} />
             </Suspense>
         </div>
     )
