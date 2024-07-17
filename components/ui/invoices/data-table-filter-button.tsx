@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/basics/dropdown-menu'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/basics/badge'
 
 interface DataTableFilterButtonProps<TData> {
     table: Table<TData>
@@ -42,22 +43,29 @@ export function DataTableFilterButton<TData>({ table }: DataTableFilterButtonPro
     }, [typeOfUnpaidInvoices, handleFilter])
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 lg:flex">
-                    <FunnelIcon className="w-5 mr-1" />
-                    Filtrer
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => setTypeOfUnpaidInvoices('socialSecurity')}>
-                    Factures CPAM impayées
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTypeOfUnpaidInvoices('insurance')}>
-                    Facture Mutuelle impayées
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTypeOfUnpaidInvoices('')}>Toutes les factures</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex flex-row gap-2">
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 lg:flex">
+                        <FunnelIcon className="w-5 mr-1" />
+                        Filtrer
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => setTypeOfUnpaidInvoices('socialSecurity')}>
+                        Factures CPAM impayées
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTypeOfUnpaidInvoices('insurance')}>
+                        Factures Mutuelle impayées
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTypeOfUnpaidInvoices('')}>Toutes les factures</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            {typeOfUnpaidInvoices && (
+                <Badge variant={'outline'}>
+                    {typeOfUnpaidInvoices === 'socialSecurity' ? 'Factures CPAM impayées' : 'Factures Mutuelle impayée'}
+                </Badge>
+            )}
+        </div>
     )
 }

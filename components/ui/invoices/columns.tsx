@@ -9,6 +9,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Badge } from '@/components/ui/basics/badge'
 import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
+import { useState } from 'react'
 
 export const columns: ColumnDef<Invoice>[] = [
     {
@@ -96,25 +97,28 @@ export const columns: ColumnDef<Invoice>[] = [
     {
         accessorKey: 'actions',
         header: '',
-        cell: ({ row }) => {
+        cell: function CellComponent({ row }) {
             const invoice = row.original
+
+            const [open, setOpen] = useState(false)
+            const closeModal = () => {
+                setOpen(false)
+            }
 
             return (
                 <div className="space-y-1 md:space-y-0 md:space-x-2">
                     <ResponsiveDialog
+                        open={open}
+                        onOpenChange={setOpen}
                         openButton={
-                            <Button
-                                variant="outline"
-                                className="p-2"
-                                onClick={() => console.log(`modifier ${invoice.id}`)}
-                            >
+                            <Button variant="outline" className="p-2">
                                 <span className="sr-only">Modifier la facture</span>
                                 <PencilIcon className="w-5" />
                             </Button>
                         }
                         title="Modifier la facture"
                     >
-                        <InvoiceForm invoice={invoice} />
+                        <InvoiceForm invoice={invoice} closeModal={closeModal} />
                     </ResponsiveDialog>
 
                     <Button variant="outline" className="p-2" onClick={() => console.log(`supprimer ${invoice.id}`)}>

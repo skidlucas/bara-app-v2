@@ -19,28 +19,31 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from '@/components/ui/basics/drawer'
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { useDesktop } from '@/lib/hooks/use-media-query'
 
 export function ResponsiveDialog({
+    open,
+    onOpenChange,
     openButton,
     footer = true,
     title,
     description,
     children,
 }: {
+    open: boolean
+    onOpenChange: Dispatch<SetStateAction<boolean>>
     openButton: React.ReactElement
     footer?: boolean
     title: string
     description?: string
     children: React.ReactNode
 }) {
-    const [open, setOpen] = useState(false)
     const isDesktop = useDesktop()
 
     if (isDesktop) {
         return (
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={open} onOpenChange={onOpenChange}>
                 <DialogTrigger asChild>{openButton}</DialogTrigger>
                 <DialogContent className="sm:max-w-[850px]">
                     <DialogHeader>
@@ -62,7 +65,7 @@ export function ResponsiveDialog({
     }
 
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
+        <Drawer open={open} onOpenChange={onOpenChange}>
             <DrawerTrigger asChild>{openButton}</DrawerTrigger>
             <DrawerContent>
                 <DrawerHeader className="text-left">

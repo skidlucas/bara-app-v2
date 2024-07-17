@@ -1,5 +1,3 @@
-'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -15,6 +13,7 @@ import { Invoice } from '@/lib/definitions'
 import { clsx } from 'clsx'
 import baraApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
+import { add } from 'date-fns'
 
 const formSchema = z
     .object({
@@ -42,7 +41,7 @@ const formSchema = z
 
 export interface InvoiceFormValues extends z.infer<typeof formSchema> {}
 
-export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
+export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeModal?: () => void }) {
     const isUpdateForm = !!invoice
     const { push } = useRouter()
 
@@ -74,17 +73,23 @@ export function InvoiceForm({ invoice }: { invoice?: Invoice }) {
     })
 
     const onSubmit = async (values: InvoiceFormValues) => {
-        const invoiceToCreate: Partial<Invoice> = {
+        const invoiceToSave: Partial<Invoice> = {
             ...values,
+            date: add(values.date, { hours: 12 }), // hack to make sure this is the correct date when translating to UTC
             patientId: parseInt(values.patientId, 10),
             insuranceId: (values.insuranceId && parseInt(values.insuranceId, 10)) || 0,
         }
 
-        if (!invoiceToCreate.insuranceId) delete invoiceToCreate.insuranceId
+        if (!invoiceToSave.insuranceId) delete invoiceToSave.insuranceId
 
         try {
-            await baraApi.post(`/invoices`, invoiceToCreate)
-            push('/invoices')
+            if (isUpdateForm) {
+                await baraApi.patch(`/invoices/${invoice.id}`, invoiceToSave)
+                if (closeModal) closeModal()
+            } else {
+                await baraApi.post(`/invoices`, invoiceToSave)
+                push('/invoices')
+            }
         } catch (err) {
             console.log(err)
         }

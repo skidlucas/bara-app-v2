@@ -53,7 +53,7 @@ export default async function Page({
             return { invoices: data.data, meta: data.meta }
         } catch (error) {
             console.error(error)
-            return { error }
+            return { invoices: [], meta: {} }
         }
     }
 
