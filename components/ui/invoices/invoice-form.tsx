@@ -45,7 +45,7 @@ export interface InvoiceFormValues extends z.infer<typeof formSchema> {}
 
 export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeModal?: () => void }) {
     const isUpdateForm = !!invoice
-    const { push } = useRouter()
+    const { push, refresh } = useRouter()
 
     let defaultValues: InvoiceFormValues = {
         date: new Date(),
@@ -94,6 +94,8 @@ export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeM
             }
         } catch (err) {
             console.log(err)
+        } finally {
+            refresh()
         }
     }
 

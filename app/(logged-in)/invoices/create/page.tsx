@@ -6,6 +6,7 @@ import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
 export const metadata: Metadata = {
     title: MENU.invoices.pages.create.label,
 }
+
 export default async function Page() {
     // todo load customers and pass them to invoiceForm
     // const customers = await fetchCustomers()
