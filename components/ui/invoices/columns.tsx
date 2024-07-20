@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/basics/badge'
 import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
 import { useState } from 'react'
+import baraApi from '@/lib/api/client.api'
+import { useRouter } from 'next/navigation'
 
 export const columns: ColumnDef<Invoice>[] = [
     {
@@ -43,14 +45,26 @@ export const columns: ColumnDef<Invoice>[] = [
     {
         accessorKey: 'socialSecurity',
         header: 'CPAM',
-        cell: ({ row }) => {
-            const amount = formatCurrency(row.original.socialSecurityAmount)
+        cell: function CellComponent({ row }) {
+            const invoice = row.original
+            const [isPaid, setIsPaid] = useState(row.original.isSocialSecurityPaid)
+
+            const toggleSocialSecurityPayment = async () => {
+                try {
+                    await baraApi.patch(`/invoices/${invoice.id}`, { isSocialSecurityPaid: !isPaid })
+                    setIsPaid(!isPaid)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+
+            const amount = formatCurrency(invoice.socialSecurityAmount)
 
             return (
                 <Badge
-                    variant={row.original.isSocialSecurityPaid ? 'creative' : 'destructive'}
+                    variant={isPaid ? 'creative' : 'destructive'}
                     className="hover:cursor-pointer"
-                    onClick={() => console.log('marquer comme payé/impayé')}
+                    onClick={toggleSocialSecurityPayment}
                 >
                     {amount}
                 </Badge>
@@ -60,17 +74,28 @@ export const columns: ColumnDef<Invoice>[] = [
     {
         accessorKey: 'insurance',
         header: 'Mutuelle',
-        cell: ({ row }) => {
-            if (row.original.insurance?.name && row.original.insuranceAmount) {
-                const amount = formatCurrency(row.original.insuranceAmount)
+        cell: function CellComponent({ row }) {
+            const invoice = row.original
+            const [isPaid, setIsPaid] = useState(row.original.isInsurancePaid)
+
+            const toggleInsurancePayment = async () => {
+                try {
+                    await baraApi.patch(`/invoices/${invoice.id}`, { isInsurancePaid: !isPaid })
+                    setIsPaid(!isPaid)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            if (invoice.insurance?.name && invoice.insuranceAmount) {
+                const amount = formatCurrency(invoice.insuranceAmount)
 
                 return (
                     <div>
-                        {row.original.insurance.name} :
+                        {invoice.insurance.name} :
                         <Badge
-                            variant={row.original.isInsurancePaid ? 'creative' : 'destructive'}
+                            variant={isPaid ? 'creative' : 'destructive'}
                             className="hover:cursor-pointer md:ml-1"
-                            onClick={() => console.log('marquer comme payé/impayé')}
+                            onClick={toggleInsurancePayment}
                         >
                             {amount}
                         </Badge>
@@ -99,10 +124,20 @@ export const columns: ColumnDef<Invoice>[] = [
         header: '',
         cell: function CellComponent({ row }) {
             const invoice = row.original
-
+            const { refresh } = useRouter()
             const [open, setOpen] = useState(false)
             const closeModal = () => {
                 setOpen(false)
+            }
+
+            const deleteInvoice = async () => {
+                try {
+                    await baraApi.delete(`/invoices/${invoice.id}`)
+                } catch (err) {
+                    console.log(err)
+                } finally {
+                    refresh()
+                }
             }
 
             return (
@@ -121,8 +156,7 @@ export const columns: ColumnDef<Invoice>[] = [
                         <InvoiceForm invoice={invoice} closeModal={closeModal} />
                     </ResponsiveDialog>
 
-                    <Button variant="outline" className="p-2" onClick={() => console.log(`supprimer ${invoice.id}`)}>
-                        {/* TODO : api call to delete the invoice OR modal to make sure its not an error */}
+                    <Button variant="outline" className="p-2" onClick={deleteInvoice}>
                         <span className="sr-only">Supprimer la facture</span>
                         <TrashIcon className="w-5" />
                     </Button>
