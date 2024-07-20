@@ -38,26 +38,20 @@ export default async function Page({
         }
 
         if (unpaid) {
-            if (unpaid === 'socialSecurity') {
-                queryParams['filter.isSocialSecurityPaid'] = false
-                queryParams['filter.securityAmount'] = '$gt:0'
-            } else if (unpaid === 'insurance') {
-                queryParams['filter.isInsurancePaid'] = false
-                queryParams['filter.insuranceAmount'] = '$gt:0'
-            }
+            queryParams.search = search
         }
         const searchParams = new URLSearchParams(queryParams)
 
         try {
             const { data } = await baraApi.get(`/invoices?${searchParams.toString()}`)
-            return { invoices: data.data, meta: data.meta }
+            return { invoices: data.data, totalItems: data.totalItems }
         } catch (error) {
             console.error(error)
-            return { invoices: [], meta: {} }
+            return { invoices: [], totalItems: 0 }
         }
     }
 
-    const { invoices, meta } = await getInvoices()
+    const { invoices, totalItems } = await getInvoices()
 
     return (
         <div className="w-full">
@@ -75,7 +69,7 @@ export default async function Page({
                 </Link>
             </div>
             <Suspense key={search + currentPage} fallback={<InvoicesTableSkeleton />}>
-                <InvoicesTable columns={columns} data={invoices} totalItems={meta.totalItems} limit={limit} />
+                <InvoicesTable columns={columns} data={invoices} totalItems={totalItems} limit={limit} />
             </Suspense>
         </div>
     )
