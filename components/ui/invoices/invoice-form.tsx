@@ -11,11 +11,12 @@ import { FormDatePicker } from '@/components/ui/basics/form-components/date-pick
 import { FormSelect } from '@/components/ui/basics/form-components/select'
 import { Input } from '@/components/ui/basics/input'
 import { Switch } from '@/components/ui/basics/switch'
-import { Invoice } from '@/lib/definitions'
+import { Insurance, Invoice, Patient } from '@/lib/definitions'
 import { clsx } from 'clsx'
 import baraApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { add } from 'date-fns'
+import { useEffect, useState } from 'react'
 
 const formSchema = z
     .object({
@@ -43,9 +44,16 @@ const formSchema = z
 
 export interface InvoiceFormValues extends z.infer<typeof formSchema> {}
 
-export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeModal?: () => void }) {
+interface InvoiceFormProps {
+    invoice?: Invoice
+    closeModal?: () => void
+    patients: Patient[]
+    insurances?: Insurance[]
+}
+export function InvoiceForm({ invoice, closeModal, patients, insurances }: InvoiceFormProps) {
     const isUpdateForm = !!invoice
     const { push, refresh } = useRouter()
+    const [selectedPatient, setSelectedPatient] = useState<Patient>()
 
     let defaultValues: InvoiceFormValues = {
         date: new Date(),
@@ -74,6 +82,21 @@ export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeM
         defaultValues,
     })
 
+    const { watch } = form
+
+    useEffect(() => {
+        const subscription = watch((value, { name, type }) => {
+            if (name === 'patientId' && type === 'change') {
+                // watch for patientId field and change type
+                const patient = patients.find((patient) => patient.id === parseInt(value.patientId ?? '0'))
+                if (patient) {
+                    setSelectedPatient(patient)
+                }
+            }
+        })
+        return () => subscription.unsubscribe()
+    }, [patients, watch])
+
     const onSubmit = async (values: InvoiceFormValues) => {
         const invoiceToSave: Partial<Invoice> = {
             ...values,
@@ -94,6 +117,18 @@ export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeM
             console.log(err)
         } finally {
             refresh()
+        }
+    }
+
+    const patientOptions = patients.map((patient) => ({
+        value: patient.id.toString(),
+        label: `${patient.firstname} ${patient.lastname}`,
+    }))
+
+    const insuranceOptions = [{ value: '0', label: 'Pas de mutuelle' }]
+    if (insurances?.length) {
+        for (const insurance of insurances) {
+            insuranceOptions.push({ value: insurance.id.toString(), label: insurance.name })
         }
     }
 
@@ -120,14 +155,7 @@ export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeM
                         render={({ field }) => (
                             <FormItem className="col-span-4">
                                 <FormLabel>Patient</FormLabel>
-                                <FormSelect
-                                    field={field}
-                                    placeholder="Choisir un patient"
-                                    options={[
-                                        { value: '1', label: 'kamel' },
-                                        { value: '2', label: 'nisqy' },
-                                    ]}
-                                />
+                                <FormSelect field={field} placeholder="Choisir un patient" options={patientOptions} />
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -141,11 +169,9 @@ export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeM
                                 <FormSelect
                                     field={field}
                                     placeholder="Choisir une mutuelle"
-                                    options={[
-                                        { value: '0', label: 'pas de mutuelle' },
-                                        { value: '1', label: 'tiky' },
-                                        { value: '2', label: 'trayton' },
-                                    ]}
+                                    options={insuranceOptions}
+                                    value={selectedPatient?.insurance?.id.toString()}
+                                    disabled={!!selectedPatient?.insurance?.id}
                                 />
                                 <FormMessage />
                             </FormItem>

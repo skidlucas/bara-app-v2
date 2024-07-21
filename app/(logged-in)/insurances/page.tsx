@@ -7,8 +7,9 @@ import { InvoicesTableSkeleton } from '@/components/ui/skeletons'
 import { columns } from '@/components/ui/insurances/columns'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import baraApi from '@/lib/api/server.api'
 import { DataTable } from '@/components/ui/data-table'
+import { getInsurances } from '@/lib/api/entities/insurance.api'
+import baraServerApi from '@/lib/api/server.api'
 
 export const metadata: Metadata = {
     title: 'Mutuelles',
@@ -25,28 +26,7 @@ export default async function Page({
     const currentPage = Number(searchParams?.page) || 1
     const limit = 10
 
-    const getInsurances = async () => {
-        const queryParams: any = {
-            page: currentPage,
-            limit,
-        }
-
-        if (search) {
-            queryParams.search = search
-        }
-
-        const searchParams = new URLSearchParams(queryParams)
-
-        try {
-            const { data } = await baraApi.get(`/insurances?${searchParams.toString()}`)
-            return { insurances: data.data, totalItems: data.totalItems }
-        } catch (error) {
-            console.error(error)
-            return { insurances: [], totalItems: 0 }
-        }
-    }
-
-    const { insurances, totalItems } = await getInsurances()
+    const { insurances, totalItems } = await getInsurances(baraServerApi, currentPage, limit, search)
 
     return (
         <div className="w-full">

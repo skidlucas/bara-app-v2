@@ -2,14 +2,17 @@ import { Metadata } from 'next'
 import { MENU } from '@/lib/menu'
 import Breadcrumbs from '@/components/ui/breadcrumbs'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
+import { getInsurances } from '@/lib/api/entities/insurance.api'
+import { getPatients } from '@/lib/api/entities/patient.api'
+import baraServerApi from '@/lib/api/server.api'
 
 export const metadata: Metadata = {
     title: MENU.invoices.pages.create.label,
 }
 
 export default async function Page() {
-    // todo load customers and pass them to invoiceForm
-    // const customers = await fetchCustomers()
+    const { patients } = await getPatients(baraServerApi, 1, 300)
+    const { insurances } = await getInsurances(baraServerApi, 1, 300)
 
     return (
         <main>
@@ -23,7 +26,7 @@ export default async function Page() {
                     },
                 ]}
             />
-            <InvoiceForm />
+            <InvoiceForm patients={patients} insurances={insurances} />
         </main>
     )
 }

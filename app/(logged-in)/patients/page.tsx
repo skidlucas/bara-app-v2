@@ -7,8 +7,9 @@ import { InvoicesTableSkeleton } from '@/components/ui/skeletons'
 import { columns } from '@/components/ui/patients/columns'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import baraApi from '@/lib/api/server.api'
 import { DataTable } from '@/components/ui/data-table'
+import { getPatients } from '@/lib/api/entities/patient.api'
+import baraServerApi from '@/lib/api/server.api'
 
 export const metadata: Metadata = {
     title: 'Patients',
@@ -25,28 +26,7 @@ export default async function Page({
     const currentPage = Number(searchParams?.page) || 1
     const limit = 10
 
-    const getPatients = async () => {
-        const queryParams: any = {
-            page: currentPage,
-            limit,
-        }
-
-        if (search) {
-            queryParams.search = search
-        }
-
-        const searchParams = new URLSearchParams(queryParams)
-
-        try {
-            const { data } = await baraApi.get(`/patients?${searchParams.toString()}`)
-            return { patients: data.data, totalItems: data.totalItems }
-        } catch (error) {
-            console.error(error)
-            return { patients: [], totalItems: 0 }
-        }
-    }
-
-    const { patients, totalItems } = await getPatients()
+    const { patients, totalItems } = await getPatients(baraServerApi, currentPage, limit, search)
 
     return (
         <div className="w-full">

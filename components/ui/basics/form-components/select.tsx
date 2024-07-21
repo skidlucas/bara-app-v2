@@ -7,13 +7,17 @@ export function FormSelect({
     field,
     placeholder,
     options,
+    value,
+    disabled = false,
 }: {
     field: any
     placeholder: string
     options: ValueLabel[]
+    value?: string
+    disabled?: boolean
 }) {
     return (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select onValueChange={field.onChange} defaultValue={field.value} value={value} disabled={disabled}>
             <SelectTrigger>
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>

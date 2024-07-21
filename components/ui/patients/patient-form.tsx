@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/basics/input'
 import { clsx } from 'clsx'
 import baraApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
-import { Patient } from '@/lib/definitions'
+import { Insurance, Patient } from '@/lib/definitions'
 import { FormSelect } from '@/components/ui/basics/form-components/select'
 
 const formSchema = z.object({
@@ -22,7 +22,7 @@ const formSchema = z.object({
 
 export interface PatientFormValue extends z.infer<typeof formSchema> {}
 
-export function PatientForm() {
+export function PatientForm({ insurances }: { insurances: Insurance[] }) {
     const { push, refresh } = useRouter()
 
     const defaultValues: PatientFormValue = {
@@ -48,6 +48,13 @@ export function PatientForm() {
             refresh()
         } catch (err) {
             console.log(err)
+        }
+    }
+
+    const insuranceOptions = [{ value: '0', label: 'Pas de mutuelle' }]
+    if (insurances.length) {
+        for (const insurance of insurances) {
+            insuranceOptions.push({ value: insurance.id.toString(), label: insurance.name })
         }
     }
 
@@ -92,11 +99,7 @@ export function PatientForm() {
                                 <FormSelect
                                     field={field}
                                     placeholder="Choisir une mutuelle"
-                                    options={[
-                                        { value: '0', label: 'pas de mutuelle' },
-                                        { value: '1', label: 'tiky' },
-                                        { value: '2', label: 'trayton' },
-                                    ]}
+                                    options={insuranceOptions}
                                 />
                                 <FormMessage />
                             </FormItem>

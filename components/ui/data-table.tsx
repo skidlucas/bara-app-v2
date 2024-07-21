@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/basics/button'
 import { DataTableActionButtons } from '@/components/ui/invoices/data-table-action-buttons'
 import { DataTableFilterButton } from '@/components/ui/invoices/data-table-filter-button'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useDesktop } from '@/lib/hooks/use-media-query'
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -28,6 +29,7 @@ export function DataTable<TData, TValue>({
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const { push } = useRouter()
+    const isDesktop = useDesktop()
 
     const [rowSelection, setRowSelection] = useState({})
     const [pagination, setPagination] = useState({
@@ -62,7 +64,7 @@ export function DataTable<TData, TValue>({
     const nbRowsDisplayed = table.getFilteredRowModel().rows.length
 
     return (
-        <div className="mt-6">
+        <div className="mt-2">
             {type === 'invoice' && (
                 <div className="flex items-center justify-between">
                     <DataTableFilterButton />
@@ -108,9 +110,9 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
             <div
-                className={`flex ${enableSelect ? 'justify-between' : 'justify-end'}  text-sm text-muted-foreground mt-1`}
+                className={`flex ${enableSelect && isDesktop ? 'justify-between' : 'justify-end'}  text-sm text-muted-foreground mt-1`}
             >
-                {enableSelect && (
+                {enableSelect && isDesktop && (
                     <div>
                         {nbRowsSelected <= 1
                             ? `${nbRowsSelected} élément sélectionné`
@@ -119,9 +121,11 @@ export function DataTable<TData, TValue>({
                     </div>
                 )}
 
-                <div>
-                    {pagination.pageIndex * pagination.pageSize + nbRowsDisplayed} / {totalItems} éléments
-                </div>
+                {isDesktop && (
+                    <div>
+                        {pagination.pageIndex * pagination.pageSize + nbRowsDisplayed} / {totalItems} éléments
+                    </div>
+                )}
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <Button
