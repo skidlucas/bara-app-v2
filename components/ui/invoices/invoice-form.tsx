@@ -82,8 +82,6 @@ export function InvoiceForm({ invoice, closeModal }: { invoice?: Invoice; closeM
             insuranceId: (values.insuranceId && parseInt(values.insuranceId, 10)) || 0,
         }
 
-        if (!invoiceToSave.insuranceId) delete invoiceToSave.insuranceId
-
         try {
             if (isUpdateForm) {
                 await baraApi.patch(`/invoices/${invoice.id}`, invoiceToSave)
