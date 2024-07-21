@@ -34,10 +34,12 @@ export function DataTableActionButtons<TData>({ table }: DataTableActionButtonsP
     })
 
     const toggleSocialSecurityPayment = () => {
+        // todo
         console.log(selectedRows)
     }
 
     const toggleInsurancePayment = () => {
+        // todo
         console.log(selectedRows)
     }
 

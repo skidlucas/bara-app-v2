@@ -1,7 +1,6 @@
 'use client'
 
 import { FunnelIcon } from '@heroicons/react/24/outline'
-import { Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/basics/button'
 import {
     DropdownMenu,
@@ -13,12 +12,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/basics/badge'
 
-interface DataTableFilterButtonProps<TData> {
-    table: Table<TData>
-}
-
-export function DataTableFilterButton<TData>({ table }: DataTableFilterButtonProps<TData>) {
-    console.log(table)
+export function DataTableFilterButton() {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const { replace } = useRouter()
@@ -62,8 +56,10 @@ export function DataTableFilterButton<TData>({ table }: DataTableFilterButtonPro
                 </DropdownMenuContent>
             </DropdownMenu>
             {typeOfUnpaidInvoices && (
-                <Badge variant={'outline'}>
-                    {typeOfUnpaidInvoices === 'socialSecurity' ? 'Factures CPAM impayées' : 'Factures Mutuelle impayée'}
+                <Badge variant={'outline'} className="hover:cursor-pointer" onClick={() => setTypeOfUnpaidInvoices('')}>
+                    {typeOfUnpaidInvoices === 'socialSecurity'
+                        ? 'Factures CPAM impayées'
+                        : 'Factures Mutuelle impayées'}
                 </Badge>
             )}
         </div>

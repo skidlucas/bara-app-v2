@@ -5,9 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-// todo change this
 const links = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     {
@@ -15,7 +12,7 @@ const links = [
         href: '/invoices',
         icon: DocumentDuplicateIcon,
     },
-    { name: 'Patients', href: '/customers', icon: UserGroupIcon },
+    { name: 'Patients', href: '/patients', icon: UserGroupIcon },
     { name: 'Mutuelles', href: '/insurances', icon: BuildingOfficeIcon },
 ]
 

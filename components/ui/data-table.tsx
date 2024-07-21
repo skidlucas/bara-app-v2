@@ -13,9 +13,18 @@ interface DataTableProps<TData, TValue> {
     data: TData[]
     totalItems: number
     limit: number
+    enableSelect?: boolean
+    type?: 'invoice' | 'insurance' | 'patient'
 }
 
-export function InvoicesTable<TData, TValue>({ columns, data, totalItems, limit }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+    columns,
+    data,
+    totalItems,
+    limit,
+    enableSelect = false,
+    type,
+}: DataTableProps<TData, TValue>) {
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const { push } = useRouter()
@@ -54,10 +63,12 @@ export function InvoicesTable<TData, TValue>({ columns, data, totalItems, limit 
 
     return (
         <div className="mt-6">
-            <div className="flex items-center justify-between">
-                <DataTableFilterButton table={table} />
-                <DataTableActionButtons table={table} />
-            </div>
+            {type === 'invoice' && (
+                <div className="flex items-center justify-between">
+                    <DataTableFilterButton />
+                    <DataTableActionButtons table={table} />
+                </div>
+            )}
             <div className="rounded-md border mt-2">
                 <Table>
                     <TableHeader>
@@ -96,15 +107,20 @@ export function InvoicesTable<TData, TValue>({ columns, data, totalItems, limit 
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex justify-between text-sm text-muted-foreground mt-1">
+            <div
+                className={`flex ${enableSelect ? 'justify-between' : 'justify-end'}  text-sm text-muted-foreground mt-1`}
+            >
+                {enableSelect && (
+                    <div>
+                        {nbRowsSelected <= 1
+                            ? `${nbRowsSelected} élément sélectionné`
+                            : `${nbRowsSelected} élements sélectionnés `}{' '}
+                        sur {nbRowsDisplayed}
+                    </div>
+                )}
+
                 <div>
-                    {nbRowsSelected <= 1
-                        ? `${nbRowsSelected} facture sélectionnée`
-                        : `${nbRowsSelected} factures sélectionnées `}{' '}
-                    sur {nbRowsDisplayed}
-                </div>
-                <div>
-                    {pagination.pageIndex * pagination.pageSize + nbRowsDisplayed} / {totalItems} factures
+                    {pagination.pageIndex * pagination.pageSize + nbRowsDisplayed} / {totalItems} éléments
                 </div>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">

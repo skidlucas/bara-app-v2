@@ -16,9 +16,21 @@ export const MENU = {
     patients: {
         label: 'Patients',
         link: '/patients',
+        pages: {
+            create: {
+                label: 'Ajouter un patient',
+                link: '/patients/create',
+            },
+        },
     },
     insurances: {
         label: 'Mutuelles',
         link: '/insurances',
+        pages: {
+            create: {
+                label: 'Ajouter une mutuelle',
+                link: '/insurances/create',
+            },
+        },
     },
 }

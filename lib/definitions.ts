@@ -20,14 +20,6 @@ export type Patient = {
     id: number
     firstname: string
     lastname: string
-    gender: string
-    dateOfBirth: string
-    phone: string
-    email: string
-    address: string
-    zipCode: string
-    city: string
-    country: string
     insuranceId?: number
     insurance?: Insurance
     invoices: Invoice[]
@@ -36,6 +28,5 @@ export type Patient = {
 export type Insurance = {
     id: number
     name: string
-    phone: string
     amcNumber: string
 }
