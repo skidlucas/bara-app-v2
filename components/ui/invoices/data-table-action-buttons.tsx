@@ -3,6 +3,8 @@
 import { Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/basics/button'
 import { Invoice } from '@/lib/definitions'
+import baraApi from '@/lib/api/client.api'
+import { useRouter } from 'next/navigation'
 
 interface DataTableActionButtonsProps<TData> {
     table: Table<TData>
@@ -10,6 +12,7 @@ interface DataTableActionButtonsProps<TData> {
 
 export function DataTableActionButtons<TData>({ table }: DataTableActionButtonsProps<TData>) {
     const selectedRows = table.getFilteredSelectedRowModel().rows
+    const { refresh } = useRouter()
 
     if (!selectedRows.length) return null
 
@@ -33,26 +36,38 @@ export function DataTableActionButtons<TData>({ table }: DataTableActionButtonsP
         return !!invoice.insuranceAmount && !invoice.isInsurancePaid
     })
 
-    const toggleSocialSecurityPayment = () => {
-        // todo
-        console.log(selectedRows)
-    }
+    const togglePayment = async (paymentType: string) => {
+        const invoiceIds: number[] = []
+        for (const row of selectedRows) {
+            const invoice = row.original as Invoice
+            invoiceIds.push(invoice.id)
+        }
 
-    const toggleInsurancePayment = () => {
-        // todo
-        console.log(selectedRows)
+        try {
+            await baraApi.patch(`/invoices/toggle-payment`, { invoiceIds, paymentType })
+        } catch (err) {
+            console.log(err)
+        } finally {
+            // todo : switch couleur bouton
+            refresh()
+        }
     }
 
     return (
         <div className="hidden ml-auto md:inline-flex md:space-x-2">
             {(allPaidForSocialSecurity || nonePaidForSocialSecurity) && (
-                <Button variant="outline" size="sm" className="h-8 lg:flex" onClick={toggleSocialSecurityPayment}>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 lg:flex"
+                    onClick={() => togglePayment('socialSecurity')}
+                >
                     Marquer CPAM comme {allPaidForSocialSecurity ? 'impayé' : 'payé'}
                 </Button>
             )}
 
             {(allPaidForInsurance || nonePaidForInsurance) && (
-                <Button variant="outline" size="sm" className="h-8 lg:flex" onClick={toggleInsurancePayment}>
+                <Button variant="outline" size="sm" className="h-8 lg:flex" onClick={() => togglePayment('insurance')}>
                     Marquer mutuelle comme {allPaidForInsurance ? 'impayé' : 'payé'}
                 </Button>
             )}
