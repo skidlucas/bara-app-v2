@@ -13,7 +13,7 @@ import baraApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
-    name: z.string(),
+    name: z.string().min(1, 'Le nom est requis'),
     amcNumber: z.string().optional(),
 })
 

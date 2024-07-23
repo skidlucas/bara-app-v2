@@ -14,9 +14,12 @@ import { Switch } from '@/components/ui/basics/switch'
 import { Insurance, Invoice, Patient } from '@/lib/definitions'
 import { clsx } from 'clsx'
 import baraApi from '@/lib/api/client.api'
+import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { add } from 'date-fns'
 import { useEffect, useState } from 'react'
+import { getPatients } from '@/lib/api/entities/patient.api'
+import { getInsurances } from '@/lib/api/entities/insurance.api'
 
 const formSchema = z
     .object({
@@ -48,11 +51,18 @@ interface InvoiceFormProps {
     invoice?: Invoice
     closeModal?: () => void
     patients: Patient[]
-    insurances?: Insurance[]
+    insurances: Insurance[]
 }
-export function InvoiceForm({ invoice, closeModal, patients, insurances }: InvoiceFormProps) {
+export function InvoiceForm({
+    invoice,
+    closeModal,
+    patients: patientsFromPage,
+    insurances: insurancesFromPage,
+}: InvoiceFormProps) {
     const isUpdateForm = !!invoice
     const { push, refresh } = useRouter()
+    const [patients, setPatients] = useState<Patient[]>(patientsFromPage)
+    const [insurances, setInsurances] = useState<Insurance[]>(insurancesFromPage)
     const [selectedPatient, setSelectedPatient] = useState<Patient>()
 
     let defaultValues: InvoiceFormValues = {
@@ -82,7 +92,7 @@ export function InvoiceForm({ invoice, closeModal, patients, insurances }: Invoi
         defaultValues,
     })
 
-    const { watch } = form
+    const { watch, setValue } = form
 
     useEffect(() => {
         const subscription = watch((value, { name, type }) => {
@@ -91,11 +101,30 @@ export function InvoiceForm({ invoice, closeModal, patients, insurances }: Invoi
                 const patient = patients.find((patient) => patient.id === parseInt(value.patientId ?? '0'))
                 if (patient) {
                     setSelectedPatient(patient)
+                    setValue('insuranceId', selectedPatient?.insurance?.id.toString() || '')
                 }
             }
         })
         return () => subscription.unsubscribe()
     }, [patients, watch])
+
+    useEffect(() => {
+        const fetchPatients = async () => {
+            const { patients } = await getPatients(baraClientApi, 1, 300)
+            setPatients(patients)
+        }
+
+        if (!patients?.length) fetchPatients()
+    }, [patients])
+
+    useEffect(() => {
+        const fetchInsurances = async () => {
+            const { insurances } = await getInsurances(baraClientApi, 1, 300)
+            setInsurances(insurances)
+        }
+
+        if (!insurances?.length) fetchInsurances()
+    }, [insurances])
 
     const onSubmit = async (values: InvoiceFormValues) => {
         const invoiceToSave: Partial<Invoice> = {

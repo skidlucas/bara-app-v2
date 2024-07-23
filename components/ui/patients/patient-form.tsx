@@ -15,8 +15,8 @@ import { Insurance, Patient } from '@/lib/definitions'
 import { FormSelect } from '@/components/ui/basics/form-components/select'
 
 const formSchema = z.object({
-    firstname: z.string(),
-    lastname: z.string(),
+    firstname: z.string().min(1, 'Le prénom est requis'),
+    lastname: z.string().min(1, 'Le nom de famille est requis'),
     insuranceId: z.string().optional(),
 })
 
@@ -94,7 +94,7 @@ export function PatientForm({ insurances }: { insurances: Insurance[] }) {
                         control={form.control}
                         name="insuranceId"
                         render={({ field }) => (
-                            <FormItem className="col-span-4">
+                            <FormItem>
                                 <FormLabel>Mutuelle</FormLabel>
                                 <FormSelect
                                     field={field}
