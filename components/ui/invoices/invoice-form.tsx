@@ -50,8 +50,8 @@ export interface InvoiceFormValues extends z.infer<typeof formSchema> {}
 interface InvoiceFormProps {
     invoice?: Invoice
     closeModal?: () => void
-    patients: Patient[]
-    insurances: Insurance[]
+    patients?: Patient[]
+    insurances?: Insurance[]
 }
 export function InvoiceForm({
     invoice,
@@ -61,8 +61,8 @@ export function InvoiceForm({
 }: InvoiceFormProps) {
     const isUpdateForm = !!invoice
     const { push, refresh } = useRouter()
-    const [patients, setPatients] = useState<Patient[]>(patientsFromPage)
-    const [insurances, setInsurances] = useState<Insurance[]>(insurancesFromPage)
+    const [patients, setPatients] = useState<Patient[]>(patientsFromPage || [])
+    const [insurances, setInsurances] = useState<Insurance[]>(insurancesFromPage || [])
     const [selectedPatient, setSelectedPatient] = useState<Patient>()
 
     let defaultValues: InvoiceFormValues = {
@@ -92,21 +92,21 @@ export function InvoiceForm({
         defaultValues,
     })
 
-    const { watch, setValue } = form
-
     useEffect(() => {
+        const { watch, setValue } = form
+
         const subscription = watch((value, { name, type }) => {
             if (name === 'patientId' && type === 'change') {
                 // watch for patientId field and change type
                 const patient = patients.find((patient) => patient.id === parseInt(value.patientId ?? '0'))
                 if (patient) {
                     setSelectedPatient(patient)
-                    setValue('insuranceId', selectedPatient?.insurance?.id.toString() || '')
+                    setValue('insuranceId', patient.insurance?.id.toString() || '')
                 }
             }
         })
         return () => subscription.unsubscribe()
-    }, [patients, watch])
+    }, [form, patients])
 
     useEffect(() => {
         const fetchPatients = async () => {

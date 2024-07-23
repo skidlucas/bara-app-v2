@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { Invoice, Patient } from '@/lib/definitions'
+import { Invoice } from '@/lib/definitions'
 import { formatCurrency, formatDateDDMMYYYY } from '@/lib/utils'
 import { Button } from '@/components/ui/basics/button'
 import { Checkbox } from '@/components/ui/basics/checkbox'
@@ -140,12 +140,6 @@ export const columns: ColumnDef<Invoice>[] = [
                 }
             }
 
-            // todo : cant use async here
-            // const currentPage = 1
-            // const limit = 300
-            // const { patients } = await getPatients(baraApi, currentPage, limit)
-            const patients = [] as Patient[]
-
             return (
                 <div className="space-y-1 md:space-y-0 md:space-x-2">
                     <ResponsiveDialog
@@ -159,7 +153,7 @@ export const columns: ColumnDef<Invoice>[] = [
                         }
                         title="Modifier la facture"
                     >
-                        <InvoiceForm invoice={invoice} closeModal={closeModal} patients={patients} />
+                        <InvoiceForm invoice={invoice} closeModal={closeModal} />
                     </ResponsiveDialog>
 
                     <Button variant="outline" className="p-2" onClick={deleteInvoice}>
