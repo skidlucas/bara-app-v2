@@ -192,6 +192,7 @@ export function InvoiceForm({
                                     value={field.value}
                                     setValue={setValue}
                                     placeholder="Choisir un patient"
+                                    isInModal={isUpdateForm}
                                 />
                                 <FormMessage />
                             </FormItem>

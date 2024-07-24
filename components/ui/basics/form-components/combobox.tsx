@@ -1,5 +1,3 @@
-'use client'
-
 import * as React from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { ValueLabel } from '@/lib/definitions'
@@ -24,12 +22,20 @@ interface ComboboxProps {
     value?: string
     setValue: UseFormSetValue<any>
     placeholder?: string
+    isInModal?: boolean
 }
-export function Combobox({ options, name, value, setValue, placeholder = 'Tapez pour chercher...' }: ComboboxProps) {
+export function Combobox({
+    options,
+    name,
+    value,
+    setValue,
+    placeholder = 'Tapez pour chercher...',
+    isInModal = false,
+}: ComboboxProps) {
     const [open, setOpen] = React.useState(false)
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} modal={isInModal}>
             <PopoverTrigger asChild>
                 <FormControl>
                     <Button

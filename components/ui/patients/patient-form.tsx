@@ -137,6 +137,7 @@ export function PatientForm({ patient, closeModal, insurances: insurancesFromPag
                                     value={field.value}
                                     setValue={setValue}
                                     placeholder="Choisir une mutuelle"
+                                    isInModal={isUpdateForm}
                                 />
                                 <FormMessage />
                             </FormItem>
@@ -147,7 +148,7 @@ export function PatientForm({ patient, closeModal, insurances: insurancesFromPag
                 <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end space-x-2', { ['flex-col']: isUpdateForm })}>
                     {!isUpdateForm && (
                         <Link
-                            href={MENU.invoices.link}
+                            href={MENU.patients.link}
                             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
                         >
                             Annuler
