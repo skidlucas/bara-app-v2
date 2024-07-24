@@ -9,10 +9,12 @@ import Link from 'next/link'
 import { MENU } from '@/lib/menu'
 import { Input } from '@/components/ui/basics/input'
 import { clsx } from 'clsx'
-import baraApi from '@/lib/api/client.api'
+import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { Insurance, Patient } from '@/lib/definitions'
 import { Combobox } from '@/components/ui/basics/form-components/combobox'
+import { useEffect, useState } from 'react'
+import { getInsurances } from '@/lib/api/entities/insurance.api'
 
 const formSchema = z.object({
     firstname: z.string().min(1, 'Le prénom est requis'),
@@ -22,14 +24,39 @@ const formSchema = z.object({
 
 export interface PatientFormValue extends z.infer<typeof formSchema> {}
 
-export function PatientForm({ insurances }: { insurances: Insurance[] }) {
-    const { push, refresh } = useRouter()
+interface PatientFormProps {
+    patient?: Patient
+    closeModal?: () => void
+    insurances?: Insurance[]
+}
 
-    const defaultValues: PatientFormValue = {
+export function PatientForm({ patient, closeModal, insurances: insurancesFromPage }: PatientFormProps) {
+    const isUpdateForm = !!patient
+    const { push, refresh } = useRouter()
+    const [insurances, setInsurances] = useState<Insurance[]>(insurancesFromPage || [])
+
+    let defaultValues: PatientFormValue = {
         firstname: '',
         lastname: '',
         insuranceId: '',
     }
+
+    if (isUpdateForm) {
+        defaultValues = {
+            firstname: patient.firstname,
+            lastname: patient.lastname,
+            insuranceId: patient.insurance?.id.toString() ?? '',
+        }
+    }
+
+    useEffect(() => {
+        const fetchInsurances = async () => {
+            const { insurances } = await getInsurances(baraClientApi, 1, 300)
+            setInsurances(insurances)
+        }
+
+        if (!insurances?.length) fetchInsurances()
+    }, [insurances])
 
     const form = useForm<PatientFormValue>({
         resolver: zodResolver(formSchema),
@@ -45,11 +72,17 @@ export function PatientForm({ insurances }: { insurances: Insurance[] }) {
         }
 
         try {
-            await baraApi.post(`/patients`, patientToSave)
-            push('/patients')
-            refresh()
+            if (isUpdateForm) {
+                await baraClientApi.patch(`/patients/${patient.id}`, patientToSave)
+                if (closeModal) closeModal()
+            } else {
+                await baraClientApi.post(`/patients`, patientToSave)
+                push('/patients')
+            }
         } catch (err) {
             console.log(err)
+        } finally {
+            refresh()
         }
     }
 
@@ -111,15 +144,17 @@ export function PatientForm({ insurances }: { insurances: Insurance[] }) {
                     />
                     <div className="hidden lg:block lg:col-span-4" />
                 </div>
-                <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end space-x-2')}>
-                    <Link
-                        href={MENU.patients.link}
-                        className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-                    >
-                        Annuler
-                    </Link>
+                <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end space-x-2', { ['flex-col']: isUpdateForm })}>
+                    {!isUpdateForm && (
+                        <Link
+                            href={MENU.invoices.link}
+                            className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+                        >
+                            Annuler
+                        </Link>
+                    )}
 
-                    <Button type="submit">Ajouter le patient</Button>
+                    <Button type="submit">{isUpdateForm ? 'Modifier le patient' : 'Ajouter le patient'}</Button>
                 </div>
             </form>
         </Form>

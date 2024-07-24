@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/basics/input'
 import { Switch } from '@/components/ui/basics/switch'
 import { Insurance, Invoice, Patient } from '@/lib/definitions'
 import { clsx } from 'clsx'
-import baraApi from '@/lib/api/client.api'
 import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { add } from 'date-fns'
@@ -96,7 +95,7 @@ export function InvoiceForm({
     useEffect(() => {
         const { watch, setValue } = form
 
-        const subscription = watch((value, { name, type }) => {
+        const subscription = watch((value, { name }) => {
             if (name === 'patientId') {
                 // watch for patientId field change
                 const patient = patients.find((patient) => patient.id === parseInt(value.patientId ?? '0'))
@@ -137,10 +136,10 @@ export function InvoiceForm({
 
         try {
             if (isUpdateForm) {
-                await baraApi.patch(`/invoices/${invoice.id}`, invoiceToSave)
+                await baraClientApi.patch(`/invoices/${invoice.id}`, invoiceToSave)
                 if (closeModal) closeModal()
             } else {
-                await baraApi.post(`/invoices`, invoiceToSave)
+                await baraClientApi.post(`/invoices`, invoiceToSave)
                 push('/invoices')
             }
         } catch (err) {

@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { MENU } from '@/lib/menu'
 import { Input } from '@/components/ui/basics/input'
 import { clsx } from 'clsx'
-import baraApi from '@/lib/api/client.api'
+import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
@@ -34,7 +34,7 @@ export function InsuranceForm() {
 
     const onSubmit = async (values: InsuranceFormValues) => {
         try {
-            await baraApi.post(`/insurances`, values)
+            await baraClientApi.post(`/insurances`, values)
             push('/insurances')
             refresh()
         } catch (err) {

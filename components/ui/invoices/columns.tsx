@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/basics/badge'
 import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
 import { useState } from 'react'
-import baraApi from '@/lib/api/client.api'
+import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 
 export const columns: ColumnDef<Invoice>[] = [
@@ -51,7 +51,7 @@ export const columns: ColumnDef<Invoice>[] = [
 
             const toggleSocialSecurityPayment = async () => {
                 try {
-                    await baraApi.patch(`/invoices/${invoice.id}`, { isSocialSecurityPaid: !isPaid })
+                    await baraClientApi.patch(`/invoices/${invoice.id}`, { isSocialSecurityPaid: !isPaid })
                     setIsPaid(!isPaid)
                 } catch (err) {
                     console.log(err)
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Invoice>[] = [
 
             const toggleInsurancePayment = async () => {
                 try {
-                    await baraApi.patch(`/invoices/${invoice.id}`, { isInsurancePaid: !isPaid })
+                    await baraClientApi.patch(`/invoices/${invoice.id}`, { isInsurancePaid: !isPaid })
                     setIsPaid(!isPaid)
                 } catch (err) {
                     console.log(err)
@@ -132,7 +132,7 @@ export const columns: ColumnDef<Invoice>[] = [
 
             const deleteInvoice = async () => {
                 try {
-                    await baraApi.delete(`/invoices/${invoice.id}`)
+                    await baraClientApi.delete(`/invoices/${invoice.id}`)
                 } catch (err) {
                     console.log(err)
                 } finally {
