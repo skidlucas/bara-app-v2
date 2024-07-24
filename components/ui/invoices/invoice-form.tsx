@@ -20,6 +20,7 @@ import { add } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { getPatients } from '@/lib/api/entities/patient.api'
 import { getInsurances } from '@/lib/api/entities/insurance.api'
+import { Combobox } from '@/components/ui/basics/form-components/combobox'
 
 const formSchema = z
     .object({
@@ -96,8 +97,8 @@ export function InvoiceForm({
         const { watch, setValue } = form
 
         const subscription = watch((value, { name, type }) => {
-            if (name === 'patientId' && type === 'change') {
-                // watch for patientId field and change type
+            if (name === 'patientId') {
+                // watch for patientId field change
                 const patient = patients.find((patient) => patient.id === parseInt(value.patientId ?? '0'))
                 if (patient) {
                     setSelectedPatient(patient)
@@ -161,6 +162,8 @@ export function InvoiceForm({
         }
     }
 
+    const { setValue } = form
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -184,7 +187,13 @@ export function InvoiceForm({
                         render={({ field }) => (
                             <FormItem className="col-span-4">
                                 <FormLabel>Patient</FormLabel>
-                                <FormSelect field={field} placeholder="Choisir un patient" options={patientOptions} />
+                                <Combobox
+                                    options={patientOptions}
+                                    name={field.name}
+                                    value={field.value}
+                                    setValue={setValue}
+                                    placeholder="Choisir un patient"
+                                />
                                 <FormMessage />
                             </FormItem>
                         )}

@@ -12,7 +12,7 @@ import { clsx } from 'clsx'
 import baraApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { Insurance, Patient } from '@/lib/definitions'
-import { FormSelect } from '@/components/ui/basics/form-components/select'
+import { Combobox } from '@/components/ui/basics/form-components/combobox'
 
 const formSchema = z.object({
     firstname: z.string().min(1, 'Le prénom est requis'),
@@ -35,6 +35,8 @@ export function PatientForm({ insurances }: { insurances: Insurance[] }) {
         resolver: zodResolver(formSchema),
         defaultValues,
     })
+
+    const { setValue } = form
 
     const onSubmit = async (values: PatientFormValue) => {
         const patientToSave: Partial<Patient> = {
@@ -96,10 +98,12 @@ export function PatientForm({ insurances }: { insurances: Insurance[] }) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Mutuelle</FormLabel>
-                                <FormSelect
-                                    field={field}
-                                    placeholder="Choisir une mutuelle"
+                                <Combobox
                                     options={insuranceOptions}
+                                    name={field.name}
+                                    value={field.value}
+                                    setValue={setValue}
+                                    placeholder="Choisir une mutuelle"
                                 />
                                 <FormMessage />
                             </FormItem>
