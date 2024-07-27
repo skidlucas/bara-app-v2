@@ -19,7 +19,7 @@ import { add } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { getPatients } from '@/lib/api/entities/patient.api'
 import { getInsurances } from '@/lib/api/entities/insurance.api'
-import { Combobox } from '@/components/ui/basics/form-components/combobox'
+import { FormCombobox } from '@/components/ui/basics/form-components/combobox'
 
 const formSchema = z
     .object({
@@ -186,7 +186,7 @@ export function InvoiceForm({
                         render={({ field }) => (
                             <FormItem className="col-span-4">
                                 <FormLabel>Patient</FormLabel>
-                                <Combobox
+                                <FormCombobox
                                     options={patientOptions}
                                     name={field.name}
                                     value={field.value}

@@ -12,7 +12,7 @@ import { clsx } from 'clsx'
 import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { Insurance, Patient } from '@/lib/definitions'
-import { Combobox } from '@/components/ui/basics/form-components/combobox'
+import { FormCombobox } from '@/components/ui/basics/form-components/combobox'
 import { useEffect, useState } from 'react'
 import { getInsurances } from '@/lib/api/entities/insurance.api'
 
@@ -131,7 +131,7 @@ export function PatientForm({ patient, closeModal, insurances: insurancesFromPag
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Mutuelle</FormLabel>
-                                <Combobox
+                                <FormCombobox
                                     options={insuranceOptions}
                                     name={field.name}
                                     value={field.value}

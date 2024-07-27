@@ -24,7 +24,7 @@ interface ComboboxProps {
     placeholder?: string
     isInModal?: boolean
 }
-export function Combobox({
+export function FormCombobox({
     options,
     name,
     value,

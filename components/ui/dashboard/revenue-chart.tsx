@@ -34,7 +34,7 @@ const chartConfig = {
 
 export function RevenueChart() {
     return (
-        <Card className="mt-6">
+        <Card className="mt-6 md:max-w-[1400px]">
             <CardHeader>
                 <CardTitle>Répartition en € par mois</CardTitle>
                 <CardDescription>January - June 2024</CardDescription>

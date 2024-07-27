@@ -23,3 +23,7 @@ export const formatDateLocally = (date: Date | string) => {
 export const formatDateDDMMYYYY = (date: Date | string) => {
     return format(date, 'dd/MM/yyyy')
 }
+
+export const formatDateYYYYMMDD = (date: Date | string) => {
+    return format(date, 'yyyy-MM-dd')
+}
