@@ -12,6 +12,17 @@ import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
 import { useState } from 'react'
 import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/basics/alert-dialog'
 
 export const columns: ColumnDef<Invoice>[] = [
     {
@@ -156,10 +167,25 @@ export const columns: ColumnDef<Invoice>[] = [
                         <InvoiceForm invoice={invoice} closeModal={closeModal} />
                     </ResponsiveDialog>
 
-                    <Button variant="outline" className="p-2" onClick={deleteInvoice}>
-                        <span className="sr-only">Supprimer la facture</span>
-                        <TrashIcon className="w-5" />
-                    </Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger className="rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 p-2">
+                            <span className="sr-only">Supprimer la facture</span>
+                            <TrashIcon className="w-5" />
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Êtes-vous sûr(e) ?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Cette action ne peut pas être annulée. Cela supprimera définitivement la facture
+                                    sélectionnée.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction onClick={deleteInvoice}>Supprimer</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             )
         },
