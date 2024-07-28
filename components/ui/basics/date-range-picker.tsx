@@ -18,7 +18,6 @@ interface DateRangerPickerProps extends React.HTMLAttributes<HTMLDivElement> {
     to: Date
 }
 export function DateRangePicker({ className, from, to }: DateRangerPickerProps) {
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false)
     const [date, setDate] = useState<DateRange | undefined>({
         from,
         to,
@@ -36,7 +35,6 @@ export function DateRangePicker({ className, from, to }: DateRangerPickerProps) 
             params.set('from', formatDateYYYYMMDD(range.from))
             params.set('to', formatDateYYYYMMDD(range.to))
             push(`${pathname}?${params.toString()}`)
-            setIsCalendarOpen(false)
         } else {
             push(pathname)
         }
@@ -46,7 +44,7 @@ export function DateRangePicker({ className, from, to }: DateRangerPickerProps) 
 
     return (
         <div className={cn('grid gap-2', className)}>
-            <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+            <Popover>
                 <PopoverTrigger asChild>
                     <Button
                         id="date"
