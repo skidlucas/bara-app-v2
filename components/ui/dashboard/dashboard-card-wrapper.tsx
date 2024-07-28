@@ -10,9 +10,9 @@ export function DashboardCardWrapper({ numbers }: DashboardCardWrapperProps) {
 
     return (
         <div className="md:flex md:justify-between">
-            <DashboardCard title={`${totalReceivedThisMonth} €`} description="Total reçu (mois courant)" />
-            <DashboardCard title={`${totalLeftThisMonth} €`} description="Total restant (mois courant)" />
-            <DashboardCard title={`${total} €`} description="Total reçu" />
+            <DashboardCard title={`${totalReceivedThisMonth.toFixed(2)} €`} description="Total reçu (mois courant)" />
+            <DashboardCard title={`${totalLeftThisMonth.toFixed(2)} €`} description="Total restant (mois courant)" />
+            <DashboardCard title={`${total.toFixed(2)} €`} description="Total reçu" />
         </div>
     )
 }
