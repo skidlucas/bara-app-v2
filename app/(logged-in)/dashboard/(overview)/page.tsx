@@ -2,7 +2,7 @@ import { lusitana } from '@/components/ui/fonts'
 import { CardsSkeleton, RevenueChartSkeleton } from '@/components/ui/skeletons'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
-import { startOfYear } from 'date-fns'
+import { format, startOfYear } from 'date-fns'
 
 import { DashboardCardWrapper } from '@/components/ui/dashboard/dashboard-card-wrapper'
 import baraServerApi from '@/lib/api/server.api'
@@ -31,11 +31,22 @@ export default async function Page({
             return data
         } catch (error) {
             console.error(error)
-            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0 }
+            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
         }
     }
 
     const numbers = await getDashboardNumbers()
+
+    const metrics = []
+    for (const metric of numbers.metricsByMonth) {
+        const paid = metric.total_social_security_paid + metric.total_insurance_paid
+        const unpaid = metric.total_social_security_unpaid + metric.total_insurance_unpaid
+        metrics.push({
+            month: format(new Date(metric.month), 'LLLL yyyy'),
+            paid,
+            unpaid,
+        })
+    }
 
     return (
         <main>
@@ -44,7 +55,7 @@ export default async function Page({
             <Suspense fallback={<CardsSkeleton />}>
                 <DashboardCardWrapper numbers={numbers} />
             </Suspense>
-            <Suspense fallback={<RevenueChartSkeleton />}>{<RevenueChart />}</Suspense>
+            <Suspense fallback={<RevenueChartSkeleton />}>{<RevenueChart metrics={metrics} />}</Suspense>
         </main>
     )
 }
