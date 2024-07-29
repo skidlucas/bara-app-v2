@@ -77,7 +77,7 @@ export const columns: ColumnDef<Invoice>[] = [
                     className="hover:cursor-pointer"
                     onClick={toggleSocialSecurityPayment}
                 >
-                    {amount}
+                    {amount} {isPaid ? ' payée' : ' impayée'}
                 </Badge>
             )
         },
@@ -108,7 +108,7 @@ export const columns: ColumnDef<Invoice>[] = [
                             className="hover:cursor-pointer md:ml-1"
                             onClick={toggleInsurancePayment}
                         >
-                            {amount}
+                            {amount} {isPaid ? ' payée' : ' impayée'}
                         </Badge>
                     </div>
                 )
