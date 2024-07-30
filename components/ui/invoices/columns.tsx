@@ -9,7 +9,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Badge } from '@/components/ui/basics/badge'
 import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import {
@@ -60,6 +60,11 @@ export const columns: ColumnDef<Invoice>[] = [
             const invoice = row.original
             const [isPaid, setIsPaid] = useState(row.original.isSocialSecurityPaid)
 
+            // if the value is changed externally, sync it up with our state
+            useEffect(() => {
+                setIsPaid(row.original.isSocialSecurityPaid)
+            }, [row])
+
             const toggleSocialSecurityPayment = async () => {
                 try {
                     await baraClientApi.patch(`/invoices/${invoice.id}`, { isSocialSecurityPaid: !isPaid })
@@ -77,7 +82,7 @@ export const columns: ColumnDef<Invoice>[] = [
                     className="hover:cursor-pointer"
                     onClick={toggleSocialSecurityPayment}
                 >
-                    {amount} {isPaid ? ' payée' : ' impayée'}
+                    {amount}
                 </Badge>
             )
         },
@@ -88,6 +93,11 @@ export const columns: ColumnDef<Invoice>[] = [
         cell: function CellComponent({ row }) {
             const invoice = row.original
             const [isPaid, setIsPaid] = useState(row.original.isInsurancePaid)
+
+            // if the value is changed externally, sync it up with our state
+            useEffect(() => {
+                setIsPaid(row.original.isInsurancePaid)
+            }, [row])
 
             const toggleInsurancePayment = async () => {
                 try {
@@ -108,7 +118,7 @@ export const columns: ColumnDef<Invoice>[] = [
                             className="hover:cursor-pointer md:ml-1"
                             onClick={toggleInsurancePayment}
                         >
-                            {amount} {isPaid ? ' payée' : ' impayée'}
+                            {amount}
                         </Badge>
                     </div>
                 )
