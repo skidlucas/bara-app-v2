@@ -20,6 +20,7 @@ export type Patient = {
     id: number
     firstname: string
     lastname: string
+    archived: boolean
     insuranceId?: number
     insurance?: Insurance
     invoices: Invoice[]

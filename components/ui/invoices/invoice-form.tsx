@@ -110,7 +110,7 @@ export function InvoiceForm({
 
     useEffect(() => {
         const fetchPatients = async () => {
-            const { patients } = await getPatients(baraClientApi, 1, 300)
+            const { patients } = await getPatients(baraClientApi, 1, 300, null, true)
             setPatients(patients)
         }
 
