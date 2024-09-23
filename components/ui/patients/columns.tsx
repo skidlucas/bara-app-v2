@@ -24,13 +24,6 @@ export const columns: ColumnDef<Patient>[] = [
         },
     },
     {
-        accessorKey: 'archived',
-        header: 'Actif',
-        cell: ({ row }) => {
-            return row.original.archived ? 'Non' : 'Oui'
-        },
-    },
-    {
         accessorKey: 'actions',
         header: '',
         cell: function CellComponent({ row }) {

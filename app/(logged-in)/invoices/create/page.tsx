@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-    const { patients } = await getPatients(baraServerApi, 1, 1000, null, true)
+    const { patients } = await getPatients(baraServerApi, 1, 1000)
     const { insurances } = await getInsurances(baraServerApi, 1, 1000)
 
     return (

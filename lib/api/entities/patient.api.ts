@@ -1,12 +1,6 @@
 import { AxiosInstance } from 'axios'
 
-export const getPatients = async (
-    api: AxiosInstance,
-    page: number,
-    limit: number,
-    search?: string | null,
-    activeOnly = false,
-) => {
+export const getPatients = async (api: AxiosInstance, page: number, limit: number, search?: string) => {
     const queryParams: any = {
         page,
         limit,
@@ -14,10 +8,6 @@ export const getPatients = async (
 
     if (search) {
         queryParams.search = search
-    }
-
-    if (activeOnly) {
-        queryParams.activeOnly = true
     }
 
     const searchParams = new URLSearchParams(queryParams)
