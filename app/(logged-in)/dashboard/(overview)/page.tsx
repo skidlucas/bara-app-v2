@@ -28,10 +28,11 @@ export default async function Page({
     const getDashboardNumbers = async () => {
         try {
             const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
+            console.log(data)
             return data
         } catch (error) {
             console.error(error)
-            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
+            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 1, metricsByMonth: [] }
         }
     }
 
