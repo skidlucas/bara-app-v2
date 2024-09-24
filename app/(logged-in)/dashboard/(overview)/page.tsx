@@ -8,8 +8,7 @@ import { DashboardCardWrapper } from '@/components/ui/dashboard/dashboard-card-w
 import baraServerApi from '@/lib/api/server.api'
 import { RevenueChart } from '@/components/ui/dashboard/revenue-chart'
 import { DateRangePicker } from '@/components/ui/basics/date-range-picker'
-import { delay, formatDateYYYYMMDD } from '@/lib/utils'
-import { useSession } from '@clerk/nextjs'
+import { formatDateYYYYMMDD } from '@/lib/utils'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -25,36 +24,14 @@ export default async function Page({
     const today = new Date()
     const from = searchParams?.from ?? formatDateYYYYMMDD(startOfYear(today))
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)
-    const { isLoaded, session } = useSession()
 
     const getDashboardNumbers = async () => {
-        const MAX_RETRIES = 2
-        let attempt = 0
-
-        while (attempt <= MAX_RETRIES) {
-            try {
-                if (isLoaded && session) {
-                    const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
-                    return data
-                } else {
-                    await delay(1000)
-                }
-            } catch (error: any) {
-                if (error?.response && error.response?.status === 401) {
-                    attempt++
-                    console.warn(`Attempt ${attempt} failed with 401. Retrying...`)
-
-                    await delay(1000)
-
-                    if (attempt > MAX_RETRIES) {
-                        console.error('Max retries reached, unable to authenticate.')
-                        return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 1, metricsByMonth: [] }
-                    }
-                } else {
-                    console.error(error)
-                    return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 2, metricsByMonth: [] }
-                }
-            }
+        try {
+            const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
+            return data
+        } catch (error) {
+            console.error(error)
+            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
         }
     }
 
