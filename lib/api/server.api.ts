@@ -14,12 +14,10 @@ const baraServerApi = axios.create({
 baraServerApi.interceptors.request.use(async (cfg) => {
     let accessToken = getClerkAccessTokenFromCookies()
 
-    console.log('accessToken from cookie', accessToken)
-
+    // if token is not yet in cookies, get it from Clerk
     if (!accessToken) {
         const { getToken } = auth()
         accessToken = await getToken()
-        console.log('accessToken from auth()', accessToken)
     }
 
     if (accessToken) {
