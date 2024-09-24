@@ -8,7 +8,7 @@ import { DashboardCardWrapper } from '@/components/ui/dashboard/dashboard-card-w
 import baraServerApi from '@/lib/api/server.api'
 import { RevenueChart } from '@/components/ui/dashboard/revenue-chart'
 import { DateRangePicker } from '@/components/ui/basics/date-range-picker'
-import { formatDateYYYYMMDD } from '@/lib/utils'
+import { delay, formatDateYYYYMMDD } from '@/lib/utils'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -26,13 +26,29 @@ export default async function Page({
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)
 
     const getDashboardNumbers = async () => {
-        try {
-            const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
-            console.log(data)
-            return data
-        } catch (error) {
-            console.error(error)
-            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 1, metricsByMonth: [] }
+        const MAX_RETRIES = 2
+        let attempt = 0
+
+        while (attempt <= MAX_RETRIES) {
+            try {
+                const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
+                return data
+            } catch (error: any) {
+                if (error?.response && error.response?.status === 401) {
+                    attempt++
+                    console.warn(`Attempt ${attempt} failed with 401. Retrying...`)
+
+                    await delay(1000)
+
+                    if (attempt > MAX_RETRIES) {
+                        console.error('Max retries reached, unable to authenticate.')
+                        return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 1, metricsByMonth: [] }
+                    }
+                } else {
+                    console.error(error)
+                    return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 2, metricsByMonth: [] }
+                }
+            }
         }
     }
 

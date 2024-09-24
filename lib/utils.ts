@@ -27,3 +27,5 @@ export const formatDateDDMMYYYY = (date: Date | string) => {
 export const formatDateYYYYMMDD = (date: Date | string) => {
     return format(date, 'yyyy-MM-dd')
 }
+
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
