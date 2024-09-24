@@ -9,7 +9,7 @@ import baraServerApi from '@/lib/api/server.api'
 import { RevenueChart } from '@/components/ui/dashboard/revenue-chart'
 import { DateRangePicker } from '@/components/ui/basics/date-range-picker'
 import { delay, formatDateYYYYMMDD } from '@/lib/utils'
-import { currentUser } from '@clerk/nextjs/server'
+import { useSession } from '@clerk/nextjs'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -25,7 +25,7 @@ export default async function Page({
     const today = new Date()
     const from = searchParams?.from ?? formatDateYYYYMMDD(startOfYear(today))
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)
-    const user = await currentUser()
+    const { isLoaded, session } = useSession()
 
     const getDashboardNumbers = async () => {
         const MAX_RETRIES = 2
@@ -33,7 +33,7 @@ export default async function Page({
 
         while (attempt <= MAX_RETRIES) {
             try {
-                if (user) {
+                if (isLoaded && session) {
                     const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
                     return data
                 } else {
