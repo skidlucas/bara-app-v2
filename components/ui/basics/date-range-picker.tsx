@@ -28,18 +28,28 @@ export function DateRangePicker({ className, from, to }: DateRangerPickerProps) 
     const { push } = useRouter()
     const isDesktop = useDesktop()
 
-    const handleDateChange = (range: DateRange | undefined) => {
+    const handleDayClick = (day: Date | undefined) => {
         const params = new URLSearchParams(searchParams)
 
-        if (range?.from && range?.to) {
-            params.set('from', formatDateYYYYMMDD(range.from))
-            params.set('to', formatDateYYYYMMDD(range.to))
-            push(`${pathname}?${params.toString()}`)
-        } else {
-            push(pathname)
-        }
+        setDate((prev) => {
+            let newState: DateRange | undefined
+            if (prev?.to) {
+                newState = { from: day, to: undefined }
+            } else if (prev?.from) {
+                params.set('from', formatDateYYYYMMDD(prev?.from))
+                params.set('to', formatDateYYYYMMDD(day!))
+                push(`${pathname}?${params.toString()}`)
+                newState = { from: prev?.from, to: day }
+            } else {
+                newState = { from: day, to: undefined }
+            }
 
-        setDate(range)
+            if (!prev?.from) {
+                push(pathname)
+            }
+
+            return newState
+        })
     }
 
     return (
@@ -74,16 +84,7 @@ export function DateRangePicker({ className, from, to }: DateRangerPickerProps) 
                         mode="range"
                         defaultMonth={date?.from}
                         selected={date}
-                        onDayClick={(day) =>
-                            setDate((prev) =>
-                                prev?.to
-                                    ? { from: day, to: undefined }
-                                    : prev?.from
-                                      ? { from: prev?.from, to: day }
-                                      : { from: day, to: undefined },
-                            )
-                        }
-                        // onSelect={(range) => handleDateChange(range)}
+                        onDayClick={(day) => handleDayClick(day)}
                         numberOfMonths={isDesktop ? 2 : 1}
                     />
                 </PopoverContent>
