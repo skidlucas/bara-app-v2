@@ -28,19 +28,29 @@ export function DateRangePicker({ className, from, to }: DateRangerPickerProps) 
     const { push } = useRouter()
     const isDesktop = useDesktop()
 
-    const handleDayClick = (day: Date | undefined) => {
+    const handleDayClick = (day: Date) => {
         const params = new URLSearchParams(searchParams)
 
         setDate((prev) => {
             let newState: DateRange | undefined
+
             if (prev?.to) {
+                // If 'to' is already set, reset the range
                 newState = { from: day, to: undefined }
             } else if (prev?.from) {
-                params.set('from', formatDateYYYYMMDD(prev?.from))
-                params.set('to', formatDateYYYYMMDD(day!))
-                push(`${pathname}?${params.toString()}`)
-                newState = { from: prev?.from, to: day }
+                // If 'from' is set and 'to' is not
+                if (day < prev?.from) {
+                    // If the new day is before the 'from' date, reset the range
+                    return { from: day, to: undefined }
+                } else {
+                    // Otherwise, set the 'to' date
+                    params.set('from', formatDateYYYYMMDD(prev?.from))
+                    params.set('to', formatDateYYYYMMDD(day))
+                    push(`${pathname}?${params.toString()}`)
+                    newState = { from: prev?.from, to: day }
+                }
             } else {
+                // If neither 'from' nor 'to' is set, set 'from'
                 newState = { from: day, to: undefined }
             }
 
