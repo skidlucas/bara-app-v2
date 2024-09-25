@@ -74,7 +74,16 @@ export function DateRangePicker({ className, from, to }: DateRangerPickerProps) 
                         mode="range"
                         defaultMonth={date?.from}
                         selected={date}
-                        onSelect={(range) => handleDateChange(range)}
+                        onDayClick={(day) =>
+                            setDate((prev) =>
+                                prev?.to
+                                    ? { from: day, to: undefined }
+                                    : prev?.from
+                                      ? { from: prev?.from, to: day }
+                                      : { from: day, to: undefined },
+                            )
+                        }
+                        // onSelect={(range) => handleDateChange(range)}
                         numberOfMonths={isDesktop ? 2 : 1}
                     />
                 </PopoverContent>
