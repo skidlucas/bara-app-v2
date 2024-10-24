@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255 255">
+    <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="240" height="240" rx="20" fill="#4169E1" opacity="0.2" />
+        <rect x="5" y="5" width="240" height="240" rx="20" fill="#4169E1" opacity="0.4" />
+        <rect x="10" y="10" width="240" height="240" rx="20" fill="#4169E1" />
+        <rect x="15" y="15" width="240" height="240" rx="20" fill="#5179F1" />
+        <text
+            x="135"
+            y="175"
+            font-family="Arial"
+            font-weight="bold"
+            font-size="120"
+            fill="white"
+            text-anchor="middle"
+        >
+            B
+        </text>
+    </g>
+</svg>

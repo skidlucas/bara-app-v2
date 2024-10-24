@@ -1,11 +1,11 @@
-import { GlobeAltIcon } from '@heroicons/react/24/outline'
-import { lusitana } from '@/components/ui/fonts'
+import Image from 'next/image'
+import desktopLogo from './logos/desktop-logo.svg'
+import mobileLogo from './logos/mobile-logo.svg'
 
-export default function BaraLogo() {
-    return (
-        <div className={`${lusitana.className} flex flex-row items-center leading-none text-white`}>
-            <GlobeAltIcon className="h-12 w-12 rotate-[15deg]" />
-            <p className="text-[44px]">Bara</p>
-        </div>
-    )
+export default function BaraLogo({ isDesktop = true }: { isDesktop: boolean }) {
+    if (isDesktop) {
+        return <Image priority src={desktopLogo} alt="Bara logo" className="w-[160px]" />
+    } else {
+        return <Image priority src={mobileLogo} alt="Bara logo" />
+    }
 }
