@@ -10,7 +10,7 @@ export const metadata: Metadata = {
         default: 'Bara',
     },
     description: 'Application pour la gestion des factures chez les kinésithérapeutes',
-    metadataBase: new URL('https://www.bara.ninja'),
+    metadataBase: new URL('https://bara.lukapps.fr'),
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

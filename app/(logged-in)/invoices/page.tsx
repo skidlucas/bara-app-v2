@@ -13,15 +13,14 @@ import { DataTable } from '@/components/ui/data-table'
 export const metadata: Metadata = {
     title: 'Factures',
 }
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: {
+export default async function Page(props: {
+    searchParams?: Promise<{
         search?: string
         page?: string
         unpaid?: string
-    }
+    }>
 }) {
+    const searchParams = await props.searchParams
     const search = searchParams?.search ?? ''
     const currentPage = Number(searchParams?.page) || 1
     const unpaid = searchParams?.unpaid ?? ''

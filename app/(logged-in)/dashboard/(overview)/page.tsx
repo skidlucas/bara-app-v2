@@ -13,14 +13,13 @@ import { formatDateYYYYMMDD } from '@/lib/utils'
 export const metadata: Metadata = {
     title: 'Dashboard',
 }
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: {
+export default async function Page(props: {
+    searchParams?: Promise<{
         from?: string
         to?: string
-    }
+    }>
 }) {
+    const searchParams = await props.searchParams
     const today = new Date()
     const from = searchParams?.from ?? formatDateYYYYMMDD(startOfYear(today))
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)

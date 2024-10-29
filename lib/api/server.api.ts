@@ -2,9 +2,10 @@ import axios from 'axios'
 import { cookies } from 'next/headers'
 import { auth } from '@clerk/nextjs/server'
 
-const getClerkAccessTokenFromCookies = () => {
+const getClerkAccessTokenFromCookies = async () => {
     const clerkCookieName = '__session'
-    return cookies().get(clerkCookieName)?.value ?? null
+    const currentCookies = await cookies()
+    return currentCookies.get(clerkCookieName)?.value ?? null
 }
 
 const baraServerApi = axios.create({
@@ -12,7 +13,7 @@ const baraServerApi = axios.create({
 })
 
 baraServerApi.interceptors.request.use(async (cfg) => {
-    let accessToken = getClerkAccessTokenFromCookies()
+    let accessToken = await getClerkAccessTokenFromCookies()
 
     // if token is not yet in cookies, get it from Clerk
     if (!accessToken) {

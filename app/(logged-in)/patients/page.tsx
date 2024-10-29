@@ -14,14 +14,13 @@ import baraServerApi from '@/lib/api/server.api'
 export const metadata: Metadata = {
     title: 'Patients',
 }
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: {
+export default async function Page(props: {
+    searchParams?: Promise<{
         search?: string
         page?: string
-    }
+    }>
 }) {
+    const searchParams = await props.searchParams
     const search = searchParams?.search ?? ''
     const currentPage = Number(searchParams?.page) || 1
     const limit = 10
