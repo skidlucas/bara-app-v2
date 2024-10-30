@@ -40,6 +40,9 @@ export default async function Page(props: {
                 return data
             } catch (error: any) {
                 if (error.response && error.response.status === 401) {
+                    console.error('401 - Error fetching statistics - data', error.response.data)
+                    console.error('401 - Error fetching statistics - headers', error.response.headers)
+
                     attempts++
                     if (attempts < maxAttempts) {
                         await delay(2000)
