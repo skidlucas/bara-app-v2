@@ -26,11 +26,19 @@ export interface PatientFormValue extends z.infer<typeof formSchema> {}
 
 interface PatientFormProps {
     patient?: Patient
+    isInModal?: boolean
     closeModal?: () => void
     insurances?: Insurance[]
+    handlePatientCreated?: (patient: Patient) => void
 }
 
-export function PatientForm({ patient, closeModal, insurances: insurancesFromPage }: PatientFormProps) {
+export function PatientForm({
+    patient,
+    isInModal = false,
+    closeModal,
+    insurances: insurancesFromPage,
+    handlePatientCreated,
+}: PatientFormProps) {
     const isUpdateForm = !!patient
     const { push, refresh } = useRouter()
     const [insurances, setInsurances] = useState<Insurance[]>(insurancesFromPage || [])
@@ -76,8 +84,9 @@ export function PatientForm({ patient, closeModal, insurances: insurancesFromPag
                 await baraClientApi.patch(`/patients/${patient.id}`, patientToSave)
                 if (closeModal) closeModal()
             } else {
-                await baraClientApi.post(`/patients`, patientToSave)
-                push('/patients')
+                const res = await baraClientApi.post(`/patients`, patientToSave)
+                if (!isInModal) push('/patients')
+                if (handlePatientCreated && res.data) handlePatientCreated(res.data)
             }
         } catch (err) {
             console.log(err)
@@ -137,7 +146,7 @@ export function PatientForm({ patient, closeModal, insurances: insurancesFromPag
                                     value={field.value}
                                     setValue={setValue}
                                     placeholder="Choisir une mutuelle"
-                                    isInModal={isUpdateForm}
+                                    isInModal={isInModal}
                                 />
                                 <FormMessage />
                             </FormItem>
@@ -145,8 +154,8 @@ export function PatientForm({ patient, closeModal, insurances: insurancesFromPag
                     />
                     <div className="hidden lg:block lg:col-span-4" />
                 </div>
-                <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end space-x-2', { ['flex-col']: isUpdateForm })}>
-                    {!isUpdateForm && (
+                <div className={clsx('mt-6 flex px-4 lg:px-0 justify-end space-x-2', { ['flex-col']: isInModal })}>
+                    {!isInModal && (
                         <Link
                             href={MENU.patients.link}
                             className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"

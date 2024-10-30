@@ -33,7 +33,7 @@ export function ResponsiveDialog({
 }: {
     open: boolean
     onOpenChange: Dispatch<SetStateAction<boolean>>
-    openButton: React.ReactElement
+    openButton?: React.ReactElement
     footer?: boolean
     title: string
     description?: string
@@ -44,7 +44,7 @@ export function ResponsiveDialog({
     if (isDesktop) {
         return (
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogTrigger asChild>{openButton}</DialogTrigger>
+                {openButton && <DialogTrigger asChild>{openButton}</DialogTrigger>}
                 <DialogContent className="sm:max-w-[850px]">
                     <DialogHeader>
                         <DialogTitle>{title}</DialogTitle>

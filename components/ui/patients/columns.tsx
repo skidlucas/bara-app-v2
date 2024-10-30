@@ -46,7 +46,7 @@ export const columns: ColumnDef<Patient>[] = [
                         }
                         title="Modifier le patient"
                     >
-                        <PatientForm patient={patient} closeModal={closeModal} />
+                        <PatientForm patient={patient} closeModal={closeModal} isInModal={true} />
                     </ResponsiveDialog>
                 </div>
             )

@@ -20,6 +20,8 @@ import { useEffect, useState } from 'react'
 import { getPatients } from '@/lib/api/entities/patient.api'
 import { getInsurances } from '@/lib/api/entities/insurance.api'
 import { FormCombobox } from '@/components/ui/basics/form-components/combobox'
+import { PatientForm } from '@/components/ui/patients/patient-form'
+import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
 
 const formSchema = z
     .object({
@@ -64,6 +66,7 @@ export function InvoiceForm({
     const [patients, setPatients] = useState<Patient[]>(patientsFromPage || [])
     const [insurances, setInsurances] = useState<Insurance[]>(insurancesFromPage || [])
     const [selectedPatient, setSelectedPatient] = useState<Patient>()
+    const [isCreatePatientModalOpen, setCreatePatientModalOpen] = useState(false)
 
     let defaultValues: InvoiceFormValues = {
         date: new Date(),
@@ -126,6 +129,15 @@ export function InvoiceForm({
         if (!insurances?.length) fetchInsurances()
     }, [insurances])
 
+    const openCreatePatientModal = () => setCreatePatientModalOpen(true)
+    const closeCreatePatientModal = () => setCreatePatientModalOpen(false)
+
+    const handlePatientCreated = (newPatient: Patient) => {
+        setPatients((prevPatients) => [...prevPatients, newPatient])
+        setValue('patientId', newPatient.id.toString())
+        closeCreatePatientModal()
+    }
+
     const onSubmit = async (values: InvoiceFormValues) => {
         const invoiceToSave: Partial<Invoice> = {
             ...values,
@@ -184,17 +196,26 @@ export function InvoiceForm({
                         control={form.control}
                         name="patientId"
                         render={({ field }) => (
-                            <FormItem className="col-span-4">
-                                <FormLabel>Patient</FormLabel>
-                                <FormCombobox
-                                    options={patientOptions}
-                                    name={field.name}
-                                    value={field.value}
-                                    setValue={setValue}
-                                    placeholder="Choisir un patient"
-                                    isInModal={isUpdateForm}
-                                />
-                                <FormMessage />
+                            <FormItem className="col-span-4 flex flex-col lg:flex-row lg:items-end">
+                                <div className="flex-1 w-full lg:w-auto">
+                                    <FormLabel>Patient</FormLabel>
+                                    <FormCombobox
+                                        options={patientOptions}
+                                        name={field.name}
+                                        value={field.value}
+                                        setValue={setValue}
+                                        placeholder="Choisir un patient"
+                                        isInModal={isUpdateForm}
+                                    />
+                                    <FormMessage />
+                                </div>
+                                <Button
+                                    type="button"
+                                    onClick={openCreatePatientModal}
+                                    className="mt-2 lg:mt-0 lg:ml-2 mb-1"
+                                >
+                                    Ajouter un patient
+                                </Button>
                             </FormItem>
                         )}
                     />
@@ -286,6 +307,13 @@ export function InvoiceForm({
                     <Button type="submit">{isUpdateForm ? 'Modifier la facture' : 'Ajouter la facture'}</Button>
                 </div>
             </form>
+            <ResponsiveDialog
+                open={isCreatePatientModalOpen}
+                onOpenChange={setCreatePatientModalOpen}
+                title="Ajouter le patient"
+            >
+                <PatientForm closeModal={closeModal} isInModal={true} handlePatientCreated={handlePatientCreated} />
+            </ResponsiveDialog>
         </Form>
     )
 }
