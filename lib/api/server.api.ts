@@ -17,7 +17,7 @@ baraServerApi.interceptors.request.use(async (cfg) => {
 
     // if token is not yet in cookies, get it from Clerk
     if (!accessToken) {
-        const { getToken } = auth()
+        const { getToken } = await auth()
         accessToken = await getToken()
     }
 
