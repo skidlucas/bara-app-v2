@@ -1,5 +1,5 @@
 /**
- * The patterns are the same as the ones on the app
+ * The patterns are the same as the ones on the api
  */
 
 export const passwordPattern = /^((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?\d).{7,})\S$/
