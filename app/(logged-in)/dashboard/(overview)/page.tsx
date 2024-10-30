@@ -8,7 +8,7 @@ import { DashboardCardWrapper } from '@/components/ui/dashboard/dashboard-card-w
 import baraServerApi from '@/lib/api/server.api'
 import { RevenueChart } from '@/components/ui/dashboard/revenue-chart'
 import { DateRangePicker } from '@/components/ui/basics/date-range-picker'
-import { formatDateYYYYMMDD } from '@/lib/utils'
+import { formatDateYYYYMMDD, delay } from '@/lib/utils'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -25,12 +25,26 @@ export default async function Page(props: {
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)
 
     const getDashboardNumbers = async () => {
-        try {
-            const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
-            return data
-        } catch (error) {
-            console.error(error)
-            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
+        let attempts = 0
+        const maxAttempts = 3
+        while (attempts < maxAttempts) {
+            try {
+                const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
+                return data
+            } catch (error: any) {
+                if (error.response && error.response.status === 401) {
+                    attempts++
+                    if (attempts < maxAttempts) {
+                        await delay(3000)
+                    } else {
+                        console.error('Max attempts reached. Could not fetch dashboard numbers.')
+                        return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
+                    }
+                } else {
+                    console.error(error)
+                    return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
+                }
+            }
         }
     }
 
