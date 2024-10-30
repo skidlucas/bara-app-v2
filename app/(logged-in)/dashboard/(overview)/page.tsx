@@ -8,8 +8,7 @@ import { DashboardCardWrapper } from '@/components/ui/dashboard/dashboard-card-w
 import baraServerApi from '@/lib/api/server.api'
 import { RevenueChart } from '@/components/ui/dashboard/revenue-chart'
 import { DateRangePicker } from '@/components/ui/basics/date-range-picker'
-import { formatDateYYYYMMDD, delay } from '@/lib/utils'
-import { currentUser } from '@clerk/nextjs/server'
+import { formatDateYYYYMMDD } from '@/lib/utils'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -24,37 +23,14 @@ export default async function Page(props: {
     const today = new Date()
     const from = searchParams?.from ?? formatDateYYYYMMDD(startOfYear(today))
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)
-    const user = await currentUser()
 
     const getDashboardNumbers = async () => {
-        let attempts = 0
-        const maxAttempts = 3
-        while (attempts < maxAttempts) {
-            try {
-                if (!user) {
-                    await delay(1000)
-                    continue
-                }
-
-                const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
-                return data
-            } catch (error: any) {
-                if (error.response && error.response.status === 401) {
-                    console.error('401 - Error fetching statistics - data', error.response.data)
-                    console.error('401 - Error fetching statistics - headers', error.response.headers)
-
-                    attempts++
-                    if (attempts < maxAttempts) {
-                        await delay(2000)
-                    } else {
-                        console.error('Max attempts reached. Could not fetch dashboard numbers.')
-                        return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
-                    }
-                } else {
-                    console.error(error)
-                    return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
-                }
-            }
+        try {
+            const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
+            return data
+        } catch (error) {
+            console.error(error)
+            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
         }
     }
 
