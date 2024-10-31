@@ -13,15 +13,15 @@ import { Input } from '@/components/ui/basics/input'
 import { Switch } from '@/components/ui/basics/switch'
 import { Insurance, Invoice, Patient } from '@/lib/definitions'
 import { clsx } from 'clsx'
-import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { add } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { getPatients } from '@/lib/api/entities/patient.api'
-import { getInsurances } from '@/lib/api/entities/insurance.api'
+import { getPatients } from '@/lib/api/patient.api'
 import { FormCombobox } from '@/components/ui/basics/form-components/combobox'
 import { PatientForm } from '@/components/ui/patients/patient-form'
 import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
+import { getInsurances } from '@/lib/api/insurance.api'
+import { createInvoice, updateInvoice } from '@/lib/api/invoice.api'
 
 const formSchema = z
     .object({
@@ -113,7 +113,7 @@ export function InvoiceForm({
 
     useEffect(() => {
         const fetchPatients = async () => {
-            const { patients } = await getPatients(baraClientApi, 1, 300)
+            const { patients } = await getPatients(1, 300)
             setPatients(patients)
         }
 
@@ -122,7 +122,7 @@ export function InvoiceForm({
 
     useEffect(() => {
         const fetchInsurances = async () => {
-            const { insurances } = await getInsurances(baraClientApi, 1, 300)
+            const { insurances } = await getInsurances(1, 300)
             setInsurances(insurances)
         }
 
@@ -148,10 +148,10 @@ export function InvoiceForm({
 
         try {
             if (isUpdateForm) {
-                await baraClientApi.patch(`/invoices/${invoice.id}`, invoiceToSave)
+                await updateInvoice(invoice.id, invoiceToSave)
                 if (closeModal) closeModal()
             } else {
-                await baraClientApi.post(`/invoices`, invoiceToSave)
+                await createInvoice(invoiceToSave)
                 push('/invoices')
             }
         } catch (err) {

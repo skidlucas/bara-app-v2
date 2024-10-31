@@ -7,8 +7,8 @@ import { InvoicesTableSkeleton } from '@/components/ui/skeletons'
 import { columns } from '@/components/ui/invoices/columns'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import baraServerApi from '@/lib/api/server.api'
 import { DataTable } from '@/components/ui/data-table'
+import { getInvoices } from '@/lib/api/invoice.api'
 
 export const metadata: Metadata = {
     title: 'Factures',
@@ -26,31 +26,7 @@ export default async function Page(props: {
     const unpaid = searchParams?.unpaid ?? ''
     const limit = 10
 
-    const getInvoices = async () => {
-        const queryParams: any = {
-            page: currentPage,
-            limit,
-        }
-
-        if (search) {
-            queryParams.search = search
-        }
-
-        if (unpaid) {
-            queryParams.unpaid = unpaid
-        }
-        const searchParams = new URLSearchParams(queryParams)
-
-        try {
-            const { data } = await baraServerApi.get(`/invoices?${searchParams.toString()}`)
-            return { invoices: data.data, totalItems: data.totalItems }
-        } catch (error) {
-            console.error(error)
-            return { invoices: [], totalItems: 0 }
-        }
-    }
-
-    const { invoices, totalItems } = await getInvoices()
+    const { invoices, totalItems } = await getInvoices(currentPage, limit, search, unpaid)
 
     return (
         <div className="w-full">

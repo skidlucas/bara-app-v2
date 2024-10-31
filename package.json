@@ -6,7 +6,8 @@
         "dev": "next dev --turbopack --port 8000",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "pretty": "prettier --write \"**/*.{ts,tsx,json}\""
     },
     "dependencies": {
         "@clerk/nextjs": "^6.0.2",

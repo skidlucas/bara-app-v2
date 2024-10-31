@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
-        <ClerkProvider>
-            <html lang="fr">
-                <body className={`${inter.className} antialiased`}>{children}</body>
-            </html>
-        </ClerkProvider>
+        <html lang="fr">
+            <body className={`${inter.className} antialiased`}>
+                <ClerkProvider>{children}</ClerkProvider>
+            </body>
+        </html>
     )
 }

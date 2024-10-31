@@ -8,8 +8,7 @@ import { columns } from '@/components/ui/patients/columns'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { DataTable } from '@/components/ui/data-table'
-import { getPatients } from '@/lib/api/entities/patient.api'
-import baraServerApi from '@/lib/api/server.api'
+import { getPatients } from '@/lib/api/patient.api'
 
 export const metadata: Metadata = {
     title: 'Patients',
@@ -25,7 +24,7 @@ export default async function Page(props: {
     const currentPage = Number(searchParams?.page) || 1
     const limit = 10
 
-    const { patients, totalItems } = await getPatients(baraServerApi, currentPage, limit, search)
+    const { patients, totalItems } = await getPatients(currentPage, limit, search)
 
     return (
         <div className="w-full">

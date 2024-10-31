@@ -2,15 +2,14 @@ import { Metadata } from 'next'
 import { MENU } from '@/lib/menu'
 import Breadcrumbs from '@/components/ui/breadcrumbs'
 import { PatientForm } from '@/components/ui/patients/patient-form'
-import { getInsurances } from '@/lib/api/entities/insurance.api'
-import baraServerApi from '@/lib/api/server.api'
+import { getInsurances } from '@/lib/api/insurance.api'
 
 export const metadata: Metadata = {
     title: MENU.patients.pages.create.label,
 }
 
 export default async function Page() {
-    const { insurances } = await getInsurances(baraServerApi, 1, 300)
+    const { insurances } = await getInsurances(1, 300)
 
     return (
         <main>

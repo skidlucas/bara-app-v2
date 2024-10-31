@@ -9,12 +9,12 @@ import Link from 'next/link'
 import { MENU } from '@/lib/menu'
 import { Input } from '@/components/ui/basics/input'
 import { clsx } from 'clsx'
-import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import { Insurance, Patient } from '@/lib/definitions'
 import { FormCombobox } from '@/components/ui/basics/form-components/combobox'
 import { useEffect, useState } from 'react'
-import { getInsurances } from '@/lib/api/entities/insurance.api'
+import { createPatient, updatePatient } from '@/lib/api/patient.api'
+import { getInsurances } from '@/lib/api/insurance.api'
 
 const formSchema = z.object({
     firstname: z.string().min(1, 'Le prénom est requis'),
@@ -59,7 +59,7 @@ export function PatientForm({
 
     useEffect(() => {
         const fetchInsurances = async () => {
-            const { insurances } = await getInsurances(baraClientApi, 1, 300)
+            const { insurances } = await getInsurances(1, 300)
             setInsurances(insurances)
         }
 
@@ -73,6 +73,8 @@ export function PatientForm({
 
     const { setValue } = form
 
+    console.log(isInModal)
+
     const onSubmit = async (values: PatientFormValue) => {
         const patientToSave: Partial<Patient> = {
             ...values,
@@ -81,12 +83,16 @@ export function PatientForm({
 
         try {
             if (isUpdateForm) {
-                await baraClientApi.patch(`/patients/${patient.id}`, patientToSave)
+                await updatePatient(patient.id, patientToSave)
                 if (closeModal) closeModal()
             } else {
-                const res = await baraClientApi.post(`/patients`, patientToSave)
+                console.log(patientToSave)
+                const res = await createPatient(patientToSave)
                 if (!isInModal) push('/patients')
-                if (handlePatientCreated && res.data) handlePatientCreated(res.data)
+                if (handlePatientCreated && res.data) {
+                    console.log('handlePatientCreated')
+                    handlePatientCreated(res.data)
+                }
             }
         } catch (err) {
             console.log(err)

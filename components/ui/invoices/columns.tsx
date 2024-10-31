@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/basics/badge'
 import { ResponsiveDialog } from '@/components/ui/basics/responsive-dialog'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
 import { useEffect, useState } from 'react'
-import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
 import {
     AlertDialog,
@@ -23,6 +22,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/basics/alert-dialog'
+import { deleteInvoice, toggleInvoicePayment } from '@/lib/api/invoice.api'
 
 export const columns: ColumnDef<Invoice>[] = [
     {
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Invoice>[] = [
 
             const toggleSocialSecurityPayment = async () => {
                 try {
-                    await baraClientApi.patch(`/invoices/${invoice.id}`, { isSocialSecurityPaid: !isPaid })
+                    await toggleInvoicePayment(invoice.id, { isSocialSecurityPaid: !isPaid })
                     setIsPaid(!isPaid)
                 } catch (err) {
                     console.log(err)
@@ -101,7 +101,7 @@ export const columns: ColumnDef<Invoice>[] = [
 
             const toggleInsurancePayment = async () => {
                 try {
-                    await baraClientApi.patch(`/invoices/${invoice.id}`, { isInsurancePaid: !isPaid })
+                    await toggleInvoicePayment(invoice.id, { isInsurancePaid: !isPaid })
                     setIsPaid(!isPaid)
                 } catch (err) {
                     console.log(err)
@@ -151,9 +151,9 @@ export const columns: ColumnDef<Invoice>[] = [
                 setOpen(false)
             }
 
-            const deleteInvoice = async () => {
+            const deleteCurrentInvoice = async () => {
                 try {
-                    await baraClientApi.delete(`/invoices/${invoice.id}`)
+                    await deleteInvoice(invoice.id)
                 } catch (err) {
                     console.log(err)
                 } finally {
@@ -192,7 +192,7 @@ export const columns: ColumnDef<Invoice>[] = [
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Annuler</AlertDialogCancel>
-                                <AlertDialogAction onClick={deleteInvoice}>Supprimer</AlertDialogAction>
+                                <AlertDialogAction onClick={deleteCurrentInvoice}>Supprimer</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>

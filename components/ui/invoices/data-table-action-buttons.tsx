@@ -3,8 +3,8 @@
 import { Table } from '@tanstack/react-table'
 import { Button } from '@/components/ui/basics/button'
 import { Invoice } from '@/lib/definitions'
-import baraClientApi from '@/lib/api/client.api'
 import { useRouter } from 'next/navigation'
+import { toggleInvoicesPayment } from '@/lib/api/invoice.api'
 
 interface DataTableActionButtonsProps<TData> {
     table: Table<TData>
@@ -44,7 +44,7 @@ export function DataTableActionButtons<TData>({ table }: DataTableActionButtonsP
         }
 
         try {
-            await baraClientApi.patch(`/invoices/toggle-payment`, { invoiceIds, paymentType })
+            await toggleInvoicesPayment(invoiceIds, paymentType)
         } catch (err) {
             console.log(err)
         } finally {

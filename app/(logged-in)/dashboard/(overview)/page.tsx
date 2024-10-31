@@ -5,10 +5,10 @@ import { Suspense } from 'react'
 import { format, startOfYear } from 'date-fns'
 
 import { DashboardCardWrapper } from '@/components/ui/dashboard/dashboard-card-wrapper'
-import baraServerApi from '@/lib/api/server.api'
 import { RevenueChart } from '@/components/ui/dashboard/revenue-chart'
 import { DateRangePicker } from '@/components/ui/basics/date-range-picker'
 import { formatDateYYYYMMDD } from '@/lib/utils'
+import { getDashboardNumbers } from '@/lib/api/dashboard.api'
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -24,17 +24,7 @@ export default async function Page(props: {
     const from = searchParams?.from ?? formatDateYYYYMMDD(startOfYear(today))
     const to = searchParams?.to ?? formatDateYYYYMMDD(today)
 
-    const getDashboardNumbers = async () => {
-        try {
-            const { data } = await baraServerApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
-            return data
-        } catch (error) {
-            console.error(error)
-            return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
-        }
-    }
-
-    const numbers = await getDashboardNumbers()
+    const numbers = await getDashboardNumbers(from, to)
 
     const metrics = []
     for (const metric of numbers.metricsByMonth) {

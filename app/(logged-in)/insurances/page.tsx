@@ -8,8 +8,7 @@ import { columns } from '@/components/ui/insurances/columns'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { DataTable } from '@/components/ui/data-table'
-import { getInsurances } from '@/lib/api/entities/insurance.api'
-import baraServerApi from '@/lib/api/server.api'
+import { getInsurances } from '@/lib/api/insurance.api'
 
 export const metadata: Metadata = {
     title: 'Mutuelles',
@@ -25,7 +24,7 @@ export default async function Page(props: {
     const currentPage = Number(searchParams?.page) || 1
     const limit = 10
 
-    const { insurances, totalItems } = await getInsurances(baraServerApi, currentPage, limit, search)
+    const { insurances, totalItems } = await getInsurances(currentPage, limit, search)
 
     return (
         <div className="w-full">
