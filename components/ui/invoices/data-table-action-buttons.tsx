@@ -48,7 +48,6 @@ export function DataTableActionButtons<TData>({ table }: DataTableActionButtonsP
         } catch (err) {
             console.log(err)
         } finally {
-            // todo : couleur bouton ne change pas malgré le refresh?
             refresh()
         }
     }
