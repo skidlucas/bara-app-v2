@@ -1,5 +1,3 @@
-'use server'
-
 import baraApi from './api'
 import { Invoice } from '../definitions'
 

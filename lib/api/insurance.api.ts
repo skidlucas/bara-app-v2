@@ -1,5 +1,3 @@
-'use server'
-
 import { InsuranceFormValues } from '@/components/ui/insurances/insurance-form'
 import baraApi from './api'
 

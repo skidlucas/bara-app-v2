@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import { MENU } from '@/lib/menu'
 import Breadcrumbs from '@/components/ui/breadcrumbs'

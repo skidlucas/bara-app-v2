@@ -5,7 +5,7 @@ import NavLinks from '@/components/ui/logged-in/nav-links'
 import BaraLogo from '@/components/ui/bara-logo'
 import { SignedIn, UserButton } from '@clerk/nextjs'
 import { useDesktop } from '@/lib/hooks/use-media-query'
-import * as pack from '../../../package.json'
+import pack from '../../../package.json'
 
 export default function SideNav() {
     const isDesktop = useDesktop()
