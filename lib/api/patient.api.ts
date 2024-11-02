@@ -1,4 +1,4 @@
-import baraApi from './api'
+import { get, post, patch } from './api'
 import { Patient } from '../definitions'
 
 export const getPatients = async (page: number, limit: number, search?: string) => {
@@ -14,7 +14,7 @@ export const getPatients = async (page: number, limit: number, search?: string) 
     const searchParams = new URLSearchParams(queryParams)
 
     try {
-        const { data } = await baraApi.get(`/patients?${searchParams.toString()}`)
+        const data = await get(`/patients?${searchParams.toString()}`)
         return { patients: data.data, totalItems: data.totalItems }
     } catch (error) {
         console.error(error)
@@ -23,9 +23,9 @@ export const getPatients = async (page: number, limit: number, search?: string) 
 }
 
 export const createPatient = async (patient: Partial<Patient>) => {
-    return await baraApi.post(`/patients`, patient)
+    return await post(`/patients`, patient)
 }
 
 export const updatePatient = async (patientId: number, patient: Partial<Patient>) => {
-    return await baraApi.patch(`/patients/${patientId}`, patient)
+    return await patch(`/patients/${patientId}`, patient)
 }

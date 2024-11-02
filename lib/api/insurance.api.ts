@@ -1,5 +1,5 @@
 import { InsuranceFormValues } from '@/components/ui/insurances/insurance-form'
-import baraApi from './api'
+import { get, post } from './api'
 
 export const getInsurances = async (page: number, limit: number, search?: string) => {
     const queryParams: any = {
@@ -14,7 +14,7 @@ export const getInsurances = async (page: number, limit: number, search?: string
     const searchParams = new URLSearchParams(queryParams)
 
     try {
-        const { data } = await baraApi.get(`/insurances?${searchParams.toString()}`)
+        const data = await get(`/insurances?${searchParams.toString()}`)
         return { insurances: data.data, totalItems: data.totalItems }
     } catch (error) {
         console.error(error)
@@ -23,5 +23,5 @@ export const getInsurances = async (page: number, limit: number, search?: string
 }
 
 export const createInsurance = async (insurance: InsuranceFormValues) => {
-    return await baraApi.post(`/insurances`, insurance)
+    return await post(`/insurances`, insurance)
 }

@@ -1,9 +1,8 @@
-import baraApi from './api'
+import { get } from './api'
 
 export const getDashboardNumbers = async (from: string, to: string) => {
     try {
-        const { data } = await baraApi.get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
-        return data
+        return await get(`/statistics/dashboard-numbers?from=${from}&to=${to}`)
     } catch (error) {
         console.error(error)
         return { totalReceivedThisMonth: 0, totalLeftThisMonth: 0, total: 0, metricsByMonth: [] }
