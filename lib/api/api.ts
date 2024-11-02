@@ -20,8 +20,9 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
     const res = await fetch(completeUrl, fetchOptions)
     if (!res.ok) {
-        // todo handle error here !
-        throw new Error(`HTTP error! Status: ${res.status}`)
+        const error = await res.json()
+        console.error(error)
+        throw error
     }
 
     return res.json()
