@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import NavLinks from '@/components/ui/logged-in/nav-links'
 import BaraLogo from '@/components/ui/bara-logo'
-import { SignedIn, UserButton } from '@clerk/nextjs'
+import { SignedIn, SignOutButton, UserButton } from '@clerk/nextjs'
 import { useDesktop } from '@/lib/hooks/use-media-query'
 import pack from '../../../package.json'
 
@@ -26,6 +26,7 @@ export default function SideNav() {
                 <div className="hidden md:flex justify-center md:rounded-md md:bg-gray-100 h-[48px]">
                     <SignedIn>
                         <UserButton showName={isDesktop} />
+                        <SignOutButton />
                     </SignedIn>
                 </div>
             </div>
