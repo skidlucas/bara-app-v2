@@ -1,11 +1,11 @@
-export const dynamic = 'force-dynamic'
-
 import { Metadata } from 'next'
 import { MENU } from '@/lib/menu'
 import Breadcrumbs from '@/components/ui/breadcrumbs'
 import { InvoiceForm } from '@/components/ui/invoices/invoice-form'
 import { getPatients } from '@/lib/api/patient.api'
 import { getInsurances } from '@/lib/api/insurance.api'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
     title: MENU.invoices.pages.create.label,

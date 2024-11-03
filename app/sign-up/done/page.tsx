@@ -2,9 +2,12 @@ import { signUp } from '@/lib/api/auth.api'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
     title: 'Création du compte, redirection...',
 }
+
 export default async function Page() {
     try {
         await signUp()
