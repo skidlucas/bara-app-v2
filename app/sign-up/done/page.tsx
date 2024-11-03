@@ -14,6 +14,6 @@ export default async function Page() {
         redirect('/dashboard')
     } catch (error) {
         console.error(error)
-        redirect('/sign-up')
+        redirect('/error')
     }
 }
