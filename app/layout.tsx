@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="fr">
             <body className={`${inter.className} antialiased`}>
-                <ClerkProvider>{children}</ClerkProvider>
+                <ClerkProvider afterSignOutUrl="/sign-in">{children}</ClerkProvider>
             </body>
         </html>
     )
