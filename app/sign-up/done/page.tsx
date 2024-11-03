@@ -9,11 +9,14 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
+    let redirectUrl = '/'
     try {
         await signUp()
-        redirect('/dashboard')
+        redirectUrl = '/dashboard'
     } catch (error) {
         console.error(error)
-        redirect('/error')
+        redirectUrl = '/sign-up'
+    } finally {
+        redirect(redirectUrl)
     }
 }
